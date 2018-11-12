@@ -46,12 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\AccountStoreInfo.cs" />
-    <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AuthenticationService.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Mobile.Client">
@@ -68,12 +64,7 @@
       <Version>1.6.0.3</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\values\strings.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\drawable\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Xamarin.Forms.Utils\Xamarin.Forms.Utils.csproj">
       <Project>{605F9D4D-445F-49AC-BBEA-E4A5FAAE55CF}</Project>
