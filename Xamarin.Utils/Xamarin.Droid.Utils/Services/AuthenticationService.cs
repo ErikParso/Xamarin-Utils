@@ -11,6 +11,13 @@ using Xamarin.Forms.Utils.Services;
 
 namespace Xamarin.Droid.Utils.Services
 {
+    /// <summary>
+    /// Authenticates current user stored in AccountStore. Tries to refresh account and chcecks token activity.
+    /// Authentication is successfull, if stored users token is valid.
+    /// Otherwise call Login method to log user and store his account in AccountStore.
+    /// Call Logout method to logout user and remove his account from account store.
+    /// </summary>
+    /// <seealso cref="IAuthenticationService" />
     public class AuthenticationService : IAuthenticationService
     {
         private readonly MobileServiceClient _mobileServiceClient;
@@ -18,6 +25,13 @@ namespace Xamarin.Droid.Utils.Services
         private readonly AccountStore _accountStore;
         private readonly string _uriScheme;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthenticationService"/> class.
+        /// </summary>
+        /// <param name="context">The context (use your main activity).</param>
+        /// <param name="mobileServiceClient">The mobile service client.</param>
+        /// <param name="uriScheme">The URI scheme of your azure mobile app.</param>
+        /// <param name="accountStorePassword">The account store password.</param>
         public AuthenticationService(
             Context context,
             MobileServiceClient mobileServiceClient,
@@ -30,9 +44,16 @@ namespace Xamarin.Droid.Utils.Services
             _accountStore = AccountStore.Create(context, accountStorePassword);
         }
 
-        #region Login, Logout
+        #region Authenticate, Login, Logout
 
-        public async Task<bool> Login()
+        /// <summary>
+        /// Tries to find user registered in Account store.
+        /// If successfull, tries to refresh his token and stores a new token in Account store.
+        /// If token refresh failed (facebook), checks token expiration.
+        /// If user not registerd in AccountStore or Refresh of expired token failed, authentication is unsuccessfull.
+        /// In this case call <see cref="Login(MobileServiceAuthenticationProvider)"/> method.
+        /// </summary>
+        public async Task<bool> Authenticate()
         {
             _mobileServiceClient.CurrentUser = RetrieveTokenFromSecureStore();
             if (_mobileServiceClient.CurrentUser != null)
@@ -40,42 +61,53 @@ namespace Xamarin.Droid.Utils.Services
                 try
                 {
                     var refreshed = await _mobileServiceClient.RefreshUserAsync();
-                    if (refreshed != null)
-                    {
-                        _mobileServiceClient.CurrentUser = refreshed;
-                        StoreTokenInSecureStore(refreshed);
-                        return true;
-                    }
+                    _mobileServiceClient.CurrentUser = refreshed;
+                    StoreTokenInSecureStore(refreshed);
+                    return true;
                 }
-                catch (Exception)
+                catch (Exception) //some providers doesn't support refresh
                 {
-
+                    return IsTokenActive(_mobileServiceClient.CurrentUser.MobileServiceAuthenticationToken);
                 }
             }
-
-            if (_mobileServiceClient.CurrentUser != null && !IsTokenExpired(_mobileServiceClient.CurrentUser.MobileServiceAuthenticationToken))
+            else //No stored account
             {
-                // User has previously been authenticated, no refresh is required
-                return true;
+                return false;
             }
-
-            // We need to ask for credentials at this point
-            await LoginAsync(_mobileServiceClient);
-            if (_mobileServiceClient.CurrentUser != null)
-            {
-                // We were able to successfully log in
-                StoreTokenInSecureStore(_mobileServiceClient.CurrentUser);
-            }
-
-            return _mobileServiceClient.CurrentUser != null;
         }
 
+        /// <summary>
+        /// Logins user using specidied provider and stores his account in AccountStore for <see cref="Authenticate"/> method.
+        /// </summary>
+        /// <param name="provider">The provider.</param>
+        /// <returns>If Login successfull, returns true, otherwise false.</returns>
+        public async Task<bool> Login(MobileServiceAuthenticationProvider provider)
+        {
+            var parameters = new Dictionary<string, string>{
+                { "access_type", "offline" },
+                { "prompt", "consent" }
+            };
+            await _mobileServiceClient.LoginAsync(_context, provider, _uriScheme, parameters);
+
+            if (_mobileServiceClient.CurrentUser != null)
+            {
+                StoreTokenInSecureStore(_mobileServiceClient.CurrentUser);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Logouts user and removes his account from account store.
+        /// </summary>
         public async Task Logout()
         {
             if (_mobileServiceClient.CurrentUser == null || _mobileServiceClient.CurrentUser.MobileServiceAuthenticationToken == null)
                 return;
 
-            // Invalidate the token on the mobile backend
             var authUri = new Uri($"{_mobileServiceClient.MobileAppUri}/.auth/logout");
             using (var httpClient = new HttpClient())
             {
@@ -83,10 +115,7 @@ namespace Xamarin.Droid.Utils.Services
                 await httpClient.GetAsync(authUri);
             }
 
-            // Remove the token from the cache
             RemoveTokenFromSecureStore();
-
-            // Remove the token from the MobileServiceClient
             await _mobileServiceClient.LogoutAsync();
         }
 
@@ -138,16 +167,7 @@ namespace Xamarin.Droid.Utils.Services
 
         #region Private helpers
 
-        private async Task<MobileServiceUser> LoginAsync(MobileServiceClient client)
-        {
-            var parameters = new Dictionary<string, string>{
-                { "access_type", "offline" },
-                { "prompt", "consent" }
-            };
-            return await client.LoginAsync(_context, MobileServiceAuthenticationProvider.Google, _uriScheme, parameters);
-        }
-
-        private bool IsTokenExpired(string token)
+        private bool IsTokenActive(string token)
         {
             // Get just the JWT part of the token (without the signature).
             var jwt = token.Split(new Char[] { '.' })[1];
@@ -174,7 +194,7 @@ namespace Xamarin.Droid.Utils.Services
             // base date of 1/1/1970.
             DateTime minTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             var expire = minTime.AddSeconds(exp);
-            return (expire < DateTime.UtcNow);
+            return (expire > DateTime.UtcNow);
         }
 
         #endregion
