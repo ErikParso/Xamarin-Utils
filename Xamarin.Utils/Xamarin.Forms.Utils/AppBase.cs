@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using System;
+using Xamarin.Forms.Utils.ViewModel;
 
 namespace Xamarin.Forms.Utils
 {
@@ -9,19 +10,27 @@ namespace Xamarin.Forms.Utils
 
         public static IContainer CurrentAppContainer => ((AppBase)Current).Container;
 
-        public AppBase(Action<ContainerBuilder> registerPlatformSpecific)
+        public AppBase(Action<ContainerBuilder> registerPlatformSpecificTypes)
         {
-            // Fill container with types.
             ContainerBuilder builder = new ContainerBuilder();
-            RegisterShared(builder);
-            registerPlatformSpecific?.Invoke(builder);
+            //Register types defined by Xamarin.Forms.Utils.
+            RegisterUtilsTypes(builder);
+            //Register types defined in shared library.
+            RegisterSharedTypes(builder);
+            //Register types defined by platform specific project.
+            registerPlatformSpecificTypes?.Invoke(builder);
             Container = builder.Build();
 
             // set the root page of your application
             MainPage = GetMainPage();
         }
 
-        protected abstract void RegisterShared(ContainerBuilder builder);
+        private void RegisterUtilsTypes(ContainerBuilder builder)
+        {
+            builder.RegisterType<LoginViewModel>().SingleInstance();
+        }
+
+        protected abstract void RegisterSharedTypes(ContainerBuilder builder);
 
         /// <summary>
         /// Provide startup page. You can use <see cref="CurrentAppContainer"/>

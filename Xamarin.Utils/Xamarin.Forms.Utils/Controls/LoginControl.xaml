@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:login="clr-namespace:Microsoft.WindowsAzure.MobileServices;assembly=Microsoft.Azure.Mobile.Client"
+             xmlns:converters="clr-namespace:Xamarin.Forms.Utils.Converters"
+             x:Class="Xamarin.Forms.Utils.Controls.LoginControl">
+
+    <ContentView.Resources>
+        <Color x:Key="GoogleColor">#FFA700</Color>
+        <Color x:Key="Facebook">#3B5998</Color>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    </ContentView.Resources>
+
+    <ContentView.Content>
+
+        <Grid>
+            <StackLayout IsVisible="{Binding WorkInProgress, Converter={StaticResource InverseBooleanConverter}}">
+                <Label Text="Login with" HorizontalOptions="Center"/>
+                <Button Image="xamarin_utils_facebook_white.png" Text="Facebook" Padding="10"
+                    BackgroundColor="{StaticResource Facebook}"
+                    Command="{Binding LoginCommand}"
+                    CommandParameter="{x:Static login:MobileServiceAuthenticationProvider.Facebook}"/>
+                <Label Text="or" HorizontalOptions="Center"/>
+                <Button Image="xamarin_utils_google_white.png" Text="Google" Padding="10"
+                    BackgroundColor="{StaticResource GoogleColor}"
+                    Command="{Binding LoginCommand}"
+                    CommandParameter="{x:Static login:MobileServiceAuthenticationProvider.Google}"/>
+            </StackLayout>
+            <ActivityIndicator IsRunning="True" IsVisible="{Binding WorkInProgress}" />
+        </Grid>
+
+    </ContentView.Content>
+</ContentView>
