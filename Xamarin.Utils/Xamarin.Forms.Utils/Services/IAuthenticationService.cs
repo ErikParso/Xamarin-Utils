@@ -9,6 +9,8 @@ namespace Xamarin.Forms.Utils.Services
 
         Task<bool> Login(MobileServiceAuthenticationProvider provider);
 
+        Task<bool> Login(string email, string password);
+
         Task Logout();
     }
 }

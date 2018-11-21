@@ -3,28 +3,57 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:login="clr-namespace:Microsoft.WindowsAzure.MobileServices;assembly=Microsoft.Azure.Mobile.Client"
              xmlns:converters="clr-namespace:Xamarin.Forms.Utils.Converters"
-             x:Class="Xamarin.Forms.Utils.Controls.LoginControl">
+             xmlns:controls="clr-namespace:Xamarin.Forms.Utils.Controls"
+             x:Class="Xamarin.Forms.Utils.Controls.LoginControl"
+             x:Name="this">
 
     <ContentView.Resources>
-        <Color x:Key="GoogleColor">#FFA700</Color>
-        <Color x:Key="Facebook">#3B5998</Color>
+        <Color x:Key="FacebookColor">#4267B2</Color>
+        <Color x:Key="FacebookTextColor">#FFFFFF</Color>
+        <Color x:Key="GoogleColor">#FFFFFF</Color>
+        <Color x:Key="GoogleTextColor">#757575</Color>
+        <Color x:Key="ContinueColor">#F25400</Color>
+        <Color x:Key="ContinueTextColor">#FFFFFF</Color>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     </ContentView.Resources>
 
     <ContentView.Content>
 
         <Grid>
-            <StackLayout IsVisible="{Binding WorkInProgress, Converter={StaticResource InverseBooleanConverter}}">
-                <Label Text="Login with" HorizontalOptions="Center"/>
-                <Button Image="xamarin_utils_facebook_white.png" Text="Facebook" Padding="10"
-                    BackgroundColor="{StaticResource Facebook}"
-                    Command="{Binding LoginCommand}"
-                    CommandParameter="{x:Static login:MobileServiceAuthenticationProvider.Facebook}"/>
-                <Label Text="or" HorizontalOptions="Center"/>
-                <Button Image="xamarin_utils_google_white.png" Text="Google" Padding="10"
-                    BackgroundColor="{StaticResource GoogleColor}"
-                    Command="{Binding LoginCommand}"
-                    CommandParameter="{x:Static login:MobileServiceAuthenticationProvider.Google}"/>
+            <StackLayout IsVisible="{Binding WorkInProgress, Converter={StaticResource InverseBooleanConverter}}"
+                         WidthRequest="300">
+                <controls:LineSplitter Text="Login"/>
+                <Button Image="xamarin_utils_facebook_white.png"
+                        Text="Continue with Facebook"
+                        HeightRequest="36" CornerRadius="5" Padding="5"
+                        TextColor="{StaticResource FacebookTextColor}"
+                        BackgroundColor="{StaticResource FacebookColor}"
+                        Command="{Binding LoginCommand}"
+                        CommandParameter="{x:Static login:MobileServiceAuthenticationProvider.Facebook}"/>
+                <Button Image="xamarin_utils_google_white.png"
+                        Text="Sign in with Google"
+                        HeightRequest="36" CornerRadius="5" Padding="5"
+                        TextColor="{StaticResource GoogleTextColor}"
+                        BackgroundColor="{StaticResource GoogleColor}"
+                        Command="{Binding LoginCommand}"
+                        CommandParameter="{x:Static login:MobileServiceAuthenticationProvider.Facebook}"/>
+                <controls:LineSplitter Text="or"/>
+                <Entry Placeholder="Email" HeightRequest="36" FontSize="Small" Text="{Binding Email}"/>
+                <Entry Placeholder="Password" IsPassword="True" HeightRequest="36" FontSize="Small" Text="{Binding Password}"/>
+                <Button Text="Continue"
+                        HeightRequest="36" CornerRadius="5" Padding="5"
+                        TextColor="{StaticResource ContinueTextColor}"
+                        BackgroundColor="{StaticResource ContinueColor}"
+                        Command="{Binding LoginCustomCommand}"/>
+
+                <StackLayout VerticalOptions="End" IsVisible="{Binding Source={x:Reference this}, Path=Test}">
+                    <controls:LineSplitter Text="Test active"/>
+                    <Button Text="Try authorized request" Clicked="TestRequestClick"/>
+                    <Button Text="Try authenticate user" Clicked ="TestAuthenticateUser"/>
+                    <Button Text="Try logout user" Clicked="TestLogoutUser"/>
+                    <Label x:Name="TestResult" Text="Try authenticate user to verify, if current user is authorized with valid token. If user not authorized, login using providers or custom authentication."/>
+                </StackLayout>
+
             </StackLayout>
             <ActivityIndicator IsRunning="True" IsVisible="{Binding WorkInProgress}" />
         </Grid>

@@ -24,24 +24,28 @@ namespace Xamarin.Droid.Utils.Services
         private readonly Context _context;
         private readonly AccountStore _accountStore;
         private readonly string _uriScheme;
+        private readonly string _AuthControllerName;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthenticationService"/> class.
+        /// Initializes a new instance of the <see cref="AuthenticationService" /> class.
         /// </summary>
         /// <param name="context">The context (use your main activity).</param>
         /// <param name="mobileServiceClient">The mobile service client.</param>
         /// <param name="uriScheme">The URI scheme of your azure mobile app.</param>
         /// <param name="accountStorePassword">The account store password.</param>
+        /// <param name="authControllerName">Name of the custom authentication controller.</param>
         public AuthenticationService(
             Context context,
             MobileServiceClient mobileServiceClient,
             string uriScheme,
-            string accountStorePassword)
+            string accountStorePassword,
+            string authControllerName)
         {
             _mobileServiceClient = mobileServiceClient;
             _context = context;
             _uriScheme = uriScheme;
             _accountStore = AccountStore.Create(context, accountStorePassword);
+            _AuthControllerName = authControllerName;
         }
 
         #region Authenticate, Login, Logout
@@ -65,7 +69,7 @@ namespace Xamarin.Droid.Utils.Services
                     StoreTokenInSecureStore(refreshed);
                     return true;
                 }
-                catch (Exception) //some providers doesn't support refresh
+                catch (Exception e) //some providers doesn't support refresh
                 {
                     return IsTokenActive(_mobileServiceClient.CurrentUser.MobileServiceAuthenticationToken);
                 }
@@ -98,6 +102,26 @@ namespace Xamarin.Droid.Utils.Services
             {
                 return false;
             }
+        }
+
+        public async Task<bool> Login(string email, string password)
+        {
+            var ret = await _mobileServiceClient.InvokeApiAsync<CustomLoginResult>(
+                _AuthControllerName, HttpMethod.Post, new Dictionary<string, string> {
+                { "email", email}, { "password", password}
+            });
+            _mobileServiceClient.CurrentUser = new MobileServiceUser(ret.Username)
+            {
+                MobileServiceAuthenticationToken = ret.Token
+            };
+            StoreTokenInSecureStore(_mobileServiceClient.CurrentUser);
+            return true;
+        }
+
+        private class CustomLoginResult
+        {
+            public string Token { get; set; }
+            public string Username { get; set; }
         }
 
         /// <summary>
@@ -152,12 +176,12 @@ namespace Xamarin.Droid.Utils.Services
 
         private void RemoveTokenFromSecureStore()
         {
-            var accounts = _accountStore.FindAccountsForService("myjobdiary");
+            var accounts = _accountStore.FindAccountsForService(_uriScheme);
             if (accounts != null)
             {
                 foreach (var acct in accounts)
                 {
-                    _accountStore.Delete(acct, "myjobdiary");
+                    _accountStore.Delete(acct, _uriScheme);
                 }
             }
         }

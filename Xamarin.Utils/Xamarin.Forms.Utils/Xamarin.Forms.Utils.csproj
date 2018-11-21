@@ -16,4 +16,10 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Update="Controls\LineSplitter.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>
