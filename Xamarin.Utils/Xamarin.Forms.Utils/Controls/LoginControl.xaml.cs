@@ -90,5 +90,15 @@ namespace Xamarin.Forms.Utils.Controls
                 TestResult.Text = ex.Message;
             }
         }
+
+        private void CreateNewAccountClick(object sender, EventArgs e)
+        {
+            _viewModel.IsRegistration = true;
+        }
+
+        private void UseExistingAccountClick(object sender, EventArgs e)
+        {
+            _viewModel.IsRegistration = false;
+        }
     }
 }

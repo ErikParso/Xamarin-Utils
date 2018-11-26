@@ -40,12 +40,32 @@
                 <controls:LineSplitter Text="or"/>
                 <Entry Placeholder="Email" HeightRequest="36" FontSize="Small" Text="{Binding Email}"/>
                 <Entry Placeholder="Password" IsPassword="True" HeightRequest="36" FontSize="Small" Text="{Binding Password}"/>
+                <Entry Placeholder="Confirm password" IsPassword="True" HeightRequest="36" FontSize="Small"
+                       Text="{Binding ConfirmPassword}" IsVisible="{Binding IsRegistration}"/>
                 <Button Text="Continue"
+                        IsVisible="{Binding IsRegistration, Converter={StaticResource InverseBooleanConverter}}"
                         HeightRequest="36" CornerRadius="5" Padding="5"
                         TextColor="{StaticResource ContinueTextColor}"
                         BackgroundColor="{StaticResource ContinueColor}"
                         Command="{Binding LoginCustomCommand}"/>
-
+                <Button Text="Register"
+                        IsVisible="{Binding IsRegistration}"
+                        HeightRequest="36" CornerRadius="5" Padding="5"
+                        TextColor="{StaticResource ContinueTextColor}"
+                        BackgroundColor="{StaticResource ContinueColor}"
+                        Command="{Binding RegisterCommand}"/>
+                <Label Text="Create a new account" TextDecorations="Underline" HorizontalOptions="End" FontSize="Small"
+                       IsVisible="{Binding IsRegistration, Converter={StaticResource InverseBooleanConverter}}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="CreateNewAccountClick"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label Text="Use an existing account" TextDecorations="Underline" HorizontalOptions="End" FontSize="Small"
+                       IsVisible="{Binding IsRegistration}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="UseExistingAccountClick"/>
+                    </Label.GestureRecognizers>
+                </Label>
                 <StackLayout VerticalOptions="End" IsVisible="{Binding Source={x:Reference this}, Path=Test}">
                     <controls:LineSplitter Text="Test active"/>
                     <Button Text="Try authorized request" Clicked="TestRequestClick"/>

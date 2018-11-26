@@ -11,14 +11,17 @@ namespace Xamarin.Forms.Utils.ViewModel
     {
         private readonly IAuthenticationService _authenticationService;
         private bool _workInProgress;
+        private bool _isRegistration;
         private string _email;
         private string _password;
+        private string _confirmPassword;
 
         public LoginViewModel(IAuthenticationService authenticationService)
         {
             _authenticationService = authenticationService;
             LoginCommand = new Command<MobileServiceAuthenticationProvider>(Login);
             LoginCustomCommand = new Command(LoginCustom);
+            RegisterCommand = new Command(Register);
         }
 
         public Action UserAuthenticated { get; set; }
@@ -26,6 +29,14 @@ namespace Xamarin.Forms.Utils.ViewModel
         public ICommand LoginCommand { get; set; }
 
         public ICommand LoginCustomCommand { get; set; }
+
+        public ICommand RegisterCommand { get; set; }
+
+        public bool IsRegistration
+        {
+            get => _isRegistration;
+            set => SetField(ref _isRegistration, value);
+        }
 
         public string Email
         {
@@ -37,6 +48,12 @@ namespace Xamarin.Forms.Utils.ViewModel
         {
             get => _password;
             set => SetField(ref _password, value);
+        }
+
+        public string ConfirmPassword
+        {
+            get => _confirmPassword;
+            set => SetField(ref _confirmPassword, value);
         }
 
         public bool WorkInProgress
@@ -62,6 +79,13 @@ namespace Xamarin.Forms.Utils.ViewModel
             {
                 UserAuthenticated?.Invoke();
             }
+            WorkInProgress = false;
+        }
+
+        private void Register()
+        {
+            WorkInProgress = true;
+
             WorkInProgress = false;
         }
 
