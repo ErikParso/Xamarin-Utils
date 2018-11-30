@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xamarin.Forms.Utils.Services;
 using Xamarin.Forms.Utils.ViewModel;
 using Xamarin.Forms.Xaml;
@@ -100,5 +102,33 @@ namespace Xamarin.Forms.Utils.Controls
         {
             _viewModel.IsRegistration = false;
         }
+
+
+        #region Showing validation errors
+
+
+        private async void ShowError(object sender, IEnumerable<string> e)
+        {
+            if (validationLabel.IsVisible)
+                return; //showing previous errors
+            validationLabel.IsVisible = true;
+            foreach (string error in e)
+            {
+                await ShowErrorSlowly(error);
+            }
+            validationLabel.IsVisible = false;
+        }
+
+        private async Task ShowErrorSlowly(string e)
+        {
+            validationLabel.Opacity = 0;
+            validationLabel.Text = e;
+            await validationLabel.FadeTo(1, 100);
+            await validationLabel.FadeTo(1, (uint)e.Length * 40);
+            await validationLabel.FadeTo(0, 1000);
+        }
+
+        #endregion
+
     }
 }

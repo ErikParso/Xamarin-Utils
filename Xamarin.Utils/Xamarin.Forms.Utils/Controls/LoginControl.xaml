@@ -14,14 +14,14 @@
         <Color x:Key="GoogleTextColor">#757575</Color>
         <Color x:Key="ContinueColor">#F25400</Color>
         <Color x:Key="ContinueTextColor">#FFFFFF</Color>
+        <Color x:Key="ErrorColor">#E2574C</Color>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     </ContentView.Resources>
 
     <ContentView.Content>
 
-        <Grid>
-            <StackLayout IsVisible="{Binding WorkInProgress, Converter={StaticResource InverseBooleanConverter}}"
-                         WidthRequest="300">
+        <Grid WidthRequest="300">
+            <StackLayout IsVisible="{Binding WorkInProgress, Converter={StaticResource InverseBooleanConverter}}">
                 <controls:LineSplitter Text="Login"/>
                 <Button Image="xamarin_utils_facebook_white.png"
                         Text="Continue with Facebook"
@@ -38,10 +38,15 @@
                         Command="{Binding LoginCommand}"
                         CommandParameter="{x:Static login:MobileServiceAuthenticationProvider.Facebook}"/>
                 <controls:LineSplitter Text="or"/>
-                <Entry Placeholder="Email" HeightRequest="36" FontSize="Small" Text="{Binding Email}"/>
-                <Entry Placeholder="Password" IsPassword="True" HeightRequest="36" FontSize="Small" Text="{Binding Password}"/>
-                <Entry Placeholder="Confirm password" IsPassword="True" HeightRequest="36" FontSize="Small"
-                       Text="{Binding ConfirmPassword}" IsVisible="{Binding IsRegistration}"/>
+
+                <controls:ValidationEntry HeightRequest="36" ValidatableString="{Binding Email}"
+                                          Placeholder="Email" DisplayErrors="ShowError"/>
+                <controls:ValidationEntry HeightRequest="36" ValidatableString="{Binding Password}"
+                                          Placeholder="Password" IsPassword="True" DisplayErrors="ShowError"/>
+                <controls:ValidationEntry HeightRequest="36" ValidatableString="{Binding ConfirmPassword}" Placeholder="Confirm password"
+                                          IsPassword="True" DisplayErrors="ShowError"
+                                          IsVisible="{Binding IsRegistration}"/>
+                <Label x:Name="validationLabel" TextColor="{StaticResource ErrorColor}" FontSize="Small" VerticalOptions="End" HorizontalOptions="Center" IsVisible="False"/>
                 <Button Text="Continue"
                         IsVisible="{Binding IsRegistration, Converter={StaticResource InverseBooleanConverter}}"
                         HeightRequest="36" CornerRadius="5" Padding="5"
@@ -54,6 +59,7 @@
                         TextColor="{StaticResource ContinueTextColor}"
                         BackgroundColor="{StaticResource ContinueColor}"
                         Command="{Binding RegisterCommand}"/>
+
                 <Label Text="Create a new account" TextDecorations="Underline" HorizontalOptions="End" FontSize="Small"
                        IsVisible="{Binding IsRegistration, Converter={StaticResource InverseBooleanConverter}}">
                     <Label.GestureRecognizers>
@@ -75,7 +81,7 @@
                 </StackLayout>
 
             </StackLayout>
-            <ActivityIndicator IsRunning="True" IsVisible="{Binding WorkInProgress}" />
+            <ActivityIndicator IsRunning="True" IsVisible="{Binding WorkInProgress}"/>
         </Grid>
 
     </ContentView.Content>

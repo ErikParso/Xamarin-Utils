@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Xamarin.Forms.Utils.Services;
+using Xamarin.Forms.Utils.Validation;
+using Xamarin.Forms.Utils.Validation.Core;
 
 namespace Xamarin.Forms.Utils.ViewModel
 {
@@ -12,9 +14,9 @@ namespace Xamarin.Forms.Utils.ViewModel
         private readonly IAuthenticationService _authenticationService;
         private bool _workInProgress;
         private bool _isRegistration;
-        private string _email;
-        private string _password;
-        private string _confirmPassword;
+        private ValidatableObject<string> _email;
+        private ValidatableObject<string> _password;
+        private ValidatableObject<string> _confirmPassword;
 
         public LoginViewModel(IAuthenticationService authenticationService)
         {
@@ -22,6 +24,21 @@ namespace Xamarin.Forms.Utils.ViewModel
             LoginCommand = new Command<MobileServiceAuthenticationProvider>(Login);
             LoginCustomCommand = new Command(LoginCustom);
             RegisterCommand = new Command(Register);
+
+            AddValidations();
+        }
+
+        private void AddValidations()
+        {
+            Email = new ValidatableObject<string>(true);
+            Email.RegisterValidationRule(new IsNotNullOrEmptyRule() { ValidationMessage = "Email is required." });
+            Email.RegisterValidationRule(new EmailRule() { ValidationMessage = "Provide The valid email address." });
+            Password = new ValidatableObject<string>(true);
+            Password.RegisterValidationRule(new IsNotNullOrEmptyRule() { ValidationMessage = "Password is required." });
+            Password.RegisterValidationRule(new PasswordRule(false, true, true, true, 8) { ValidationMessage = "Passwords must be 8 more characters in length. Must contain at least 1 upper, 1 numeric and 1 special character." });
+            ConfirmPassword = new ValidatableObject<string>(true);
+            ConfirmPassword.RegisterValidationRule(new IsNotNullOrEmptyRule() { ValidationMessage = "Confirm password is required." });
+            ConfirmPassword.RegisterValidationRule(new ConfirmPasswordRule(() => Password.Value) { ValidationMessage = "Password and confirm password are not same." });
         }
 
         public Action UserAuthenticated { get; set; }
@@ -38,19 +55,19 @@ namespace Xamarin.Forms.Utils.ViewModel
             set => SetField(ref _isRegistration, value);
         }
 
-        public string Email
+        public ValidatableObject<string> Email
         {
             get => _email;
             set => SetField(ref _email, value);
         }
 
-        public string Password
+        public ValidatableObject<string> Password
         {
             get => _password;
             set => SetField(ref _password, value);
         }
 
-        public string ConfirmPassword
+        public ValidatableObject<string> ConfirmPassword
         {
             get => _confirmPassword;
             set => SetField(ref _confirmPassword, value);
@@ -74,8 +91,11 @@ namespace Xamarin.Forms.Utils.ViewModel
 
         private async void LoginCustom()
         {
+            if (!Email.Validate() | !Password.Validate())
+                return;
+
             WorkInProgress = true;
-            if (await _authenticationService.Login(Email, Password))
+            if (await _authenticationService.Login(Email.Value, Password.Value))
             {
                 UserAuthenticated?.Invoke();
             }
@@ -84,8 +104,11 @@ namespace Xamarin.Forms.Utils.ViewModel
 
         private void Register()
         {
-            WorkInProgress = true;
+            if (!Email.Validate() | !Password.Validate() | !ConfirmPassword.Validate())
+                return;
 
+            WorkInProgress = true;
+            //service.Register
             WorkInProgress = false;
         }
 
@@ -98,7 +121,6 @@ namespace Xamarin.Forms.Utils.ViewModel
             }
             WorkInProgress = false;
         }
-
 
         #region Property changed
 
