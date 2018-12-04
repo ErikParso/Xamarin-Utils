@@ -69,9 +69,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Azure.Server.Utils\Azure.Server.Utils.csproj">
-      <Project>{4EDEA13B-A2F3-41C8-8965-BC463F712A43}</Project>
-      <Name>Azure.Server.Utils</Name>
+    <ProjectReference Include="..\Azure.Server.Utils.Communication\Azure.Server.Utils.Communication.csproj">
+      <Project>{11D56A21-944F-4C5C-BEDD-F8248CD8C700}</Project>
+      <Name>Azure.Server.Utils.Communication</Name>
     </ProjectReference>
     <ProjectReference Include="..\Xamarin.Forms.Utils\Xamarin.Forms.Utils.csproj">
       <Project>{605F9D4D-445F-49AC-BBEA-E4A5FAAE55CF}</Project>

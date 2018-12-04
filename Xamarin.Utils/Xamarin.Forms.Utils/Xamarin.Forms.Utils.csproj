@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Azure.Server.Utils\Azure.Server.Utils.csproj" />
+    <ProjectReference Include="..\Azure.Server.Utils.Communication\Azure.Server.Utils.Communication.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Droid.Utils", "Xama
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Forms.Utils", "Xamarin.Forms.Utils\Xamarin.Forms.Utils.csproj", "{9FE95CAA-9A14-49E1-84F8-932D8CB29794}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azure.Server.Utils", "Azure.Server.Utils\Azure.Server.Utils.csproj", "{CA874347-D5AD-40C6-A397-1B0E97F8F956}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azure.Server.Utils.Communication", "Azure.Server.Utils.Communication\Azure.Server.Utils.Communication.csproj", "{11D56A21-944F-4C5C-BEDD-F8248CD8C700}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azure.Server.Utils", "Azure.Server.Utils\Azure.Server.Utils.csproj", "{F7E4690B-124B-49AB-A14E-EC8FC8786C64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +25,14 @@ Global
 		{9FE95CAA-9A14-49E1-84F8-932D8CB29794}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FE95CAA-9A14-49E1-84F8-932D8CB29794}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FE95CAA-9A14-49E1-84F8-932D8CB29794}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CA874347-D5AD-40C6-A397-1B0E97F8F956}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CA874347-D5AD-40C6-A397-1B0E97F8F956}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CA874347-D5AD-40C6-A397-1B0E97F8F956}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CA874347-D5AD-40C6-A397-1B0E97F8F956}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11D56A21-944F-4C5C-BEDD-F8248CD8C700}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11D56A21-944F-4C5C-BEDD-F8248CD8C700}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11D56A21-944F-4C5C-BEDD-F8248CD8C700}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11D56A21-944F-4C5C-BEDD-F8248CD8C700}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7E4690B-124B-49AB-A14E-EC8FC8786C64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7E4690B-124B-49AB-A14E-EC8FC8786C64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7E4690B-124B-49AB-A14E-EC8FC8786C64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7E4690B-124B-49AB-A14E-EC8FC8786C64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
