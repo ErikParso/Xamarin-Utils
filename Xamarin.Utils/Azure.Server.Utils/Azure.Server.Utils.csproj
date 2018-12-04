@@ -41,18 +41,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomAuthentication\AccountBase.cs" />
+    <Compile Include="CustomAuthentication\CustomLoginProviderUtils.cs" />
+    <Compile Include="CustomAuthentication\CustomRegistrationControllerBase.cs" />
+    <Compile Include="CustomAuthentication\ICustomAuthenticationContext.cs" />
+    <Compile Include="CustomAuthentication\Provider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="EntityFramework">
-      <Version>6.2.0</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Azure.Server.Utils.Communication\Azure.Server.Utils.Communication.csproj">
       <Project>{11d56a21-944f-4c5c-bedd-f8248cd8c700}</Project>
       <Name>Azure.Server.Utils.Communication</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="EntityFramework">
+      <Version>6.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Azure.Mobile.Server">
+      <Version>2.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Azure.Mobile.Server.Entity">
+      <Version>2.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Azure.Mobile.Server.Tables">
+      <Version>2.0.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

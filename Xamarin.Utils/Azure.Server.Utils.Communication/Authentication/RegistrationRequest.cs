@@ -1,4 +1,4 @@
-﻿namespace Azure.Server.Utils.Dto
+﻿namespace Azure.Server.Utils.Communication.Authentication
 {
     public class RegistrationRequest
     {

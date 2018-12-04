@@ -1,5 +1,5 @@
 ﻿using Android.Content;
-using Azure.Server.Utils.Dto;
+using Azure.Server.Utils.Communication.Authentication;
 using Microsoft.WindowsAzure.MobileServices;
 using Newtonsoft.Json.Linq;
 using System;

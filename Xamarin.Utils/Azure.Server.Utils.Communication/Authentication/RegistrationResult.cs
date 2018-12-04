@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Azure.Server.Utils.Dto
+﻿namespace Azure.Server.Utils.Communication.Authentication
 {
     public enum RegistrationResult
     {

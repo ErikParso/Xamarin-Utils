@@ -1,4 +1,4 @@
-﻿using Azure.Server.Utils.Dto;
+﻿using Azure.Server.Utils.Communication.Authentication;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.ComponentModel;
