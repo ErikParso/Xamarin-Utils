@@ -5,12 +5,12 @@ using System.Web.Http;
 
 namespace Azure.Server.Utils.CustomAuthentication
 {
-    public abstract class CustomRegistrationControllerBase<T> : ApiController
+    public abstract class CustomRegistrationController<T> : ApiController
         where T : AccountBase, new()
     {
         private readonly CustomAuthenticationContext<T> _context;
 
-        public CustomRegistrationControllerBase(CustomAuthenticationContext<T> context)
+        public CustomRegistrationController(CustomAuthenticationContext<T> context)
         {
             _context = context;
         }

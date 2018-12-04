@@ -127,9 +127,9 @@ namespace Xamarin.Droid.Utils.Services
                 _customLoginController, HttpMethod.Post, new Dictionary<string, string> {
                 { "email", email}, { "password", password}
             });
-            _mobileServiceClient.CurrentUser = new MobileServiceUser(ret.Username)
+            _mobileServiceClient.CurrentUser = new MobileServiceUser(ret.UserId)
             {
-                MobileServiceAuthenticationToken = ret.Token
+                MobileServiceAuthenticationToken = ret.MobileServiceAuthenticationToken
             };
             StoreTokenInSecureStore(_mobileServiceClient.CurrentUser);
             return true;
