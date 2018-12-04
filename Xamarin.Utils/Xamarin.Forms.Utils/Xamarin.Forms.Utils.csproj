@@ -29,4 +29,8 @@
     <Folder Include="Behaviors\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Azure.Server.Utils\Azure.Server.Utils.csproj" />
+  </ItemGroup>
+
 </Project>

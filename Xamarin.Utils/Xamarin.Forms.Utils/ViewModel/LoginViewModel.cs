@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAzure.MobileServices;
+﻿using Azure.Server.Utils.Dto;
+using Microsoft.WindowsAzure.MobileServices;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -30,13 +31,13 @@ namespace Xamarin.Forms.Utils.ViewModel
 
         private void AddValidations()
         {
-            Email = new ValidatableObject<string>(true);
+            Email = new ValidatableObject<string>(true) { Value = "parsoerik@gmail.com" };
             Email.RegisterValidationRule(new IsNotNullOrEmptyRule() { ValidationMessage = "Email is required." });
             Email.RegisterValidationRule(new EmailRule() { ValidationMessage = "Provide The valid email address." });
-            Password = new ValidatableObject<string>(true);
+            Password = new ValidatableObject<string>(true) { Value = "@ReneMladencaStrastiASkusenost1" };
             Password.RegisterValidationRule(new IsNotNullOrEmptyRule() { ValidationMessage = "Password is required." });
             Password.RegisterValidationRule(new PasswordRule(false, true, true, true, 8) { ValidationMessage = "Passwords must be 8 more characters in length. Must contain at least 1 upper, 1 numeric and 1 special character." });
-            ConfirmPassword = new ValidatableObject<string>(true);
+            ConfirmPassword = new ValidatableObject<string>(true) { Value = "@ReneMladencaStrastiASkusenost1" };
             ConfirmPassword.RegisterValidationRule(new IsNotNullOrEmptyRule() { ValidationMessage = "Confirm password is required." });
             ConfirmPassword.RegisterValidationRule(new ConfirmPasswordRule(() => Password.Value) { ValidationMessage = "Password and confirm password are not same." });
         }
@@ -102,13 +103,16 @@ namespace Xamarin.Forms.Utils.ViewModel
             WorkInProgress = false;
         }
 
-        private void Register()
+        private async void Register()
         {
             if (!Email.Validate() | !Password.Validate() | !ConfirmPassword.Validate())
                 return;
 
             WorkInProgress = true;
-            //service.Register
+            if (await _authenticationService.Register(Email.Value, Password.Value) == RegistrationResult.Registered)
+            {
+                IsRegistration = false;
+            }
             WorkInProgress = false;
         }
 

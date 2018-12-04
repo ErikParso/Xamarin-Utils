@@ -1,4 +1,5 @@
 ﻿using Android.Content;
+using Azure.Server.Utils.Dto;
 using Microsoft.WindowsAzure.MobileServices;
 using Newtonsoft.Json.Linq;
 using System;
@@ -24,7 +25,9 @@ namespace Xamarin.Droid.Utils.Services
         private readonly Context _context;
         private readonly AccountStore _accountStore;
         private readonly string _uriScheme;
-        private readonly string _AuthControllerName;
+
+        private readonly string _customRegistrationController;
+        private readonly string _customLoginController;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationService" /> class.
@@ -39,16 +42,19 @@ namespace Xamarin.Droid.Utils.Services
             MobileServiceClient mobileServiceClient,
             string uriScheme,
             string accountStorePassword,
-            string authControllerName)
+            string customLoginController,
+            string customRegistrationController)
         {
             _mobileServiceClient = mobileServiceClient;
             _context = context;
             _uriScheme = uriScheme;
             _accountStore = AccountStore.Create(context, accountStorePassword);
-            _AuthControllerName = authControllerName;
+            _customRegistrationController = customRegistrationController;
+            _customLoginController = customLoginController;
         }
 
         #region Authenticate, Login, Logout
+
 
         /// <summary>
         /// Tries to find user registered in Account store.
@@ -80,6 +86,7 @@ namespace Xamarin.Droid.Utils.Services
             }
         }
 
+
         /// <summary>
         /// Logins user using specidied provider and stores his account in AccountStore for <see cref="Authenticate"/> method.
         /// </summary>
@@ -104,10 +111,20 @@ namespace Xamarin.Droid.Utils.Services
             }
         }
 
+
+        public async Task<RegistrationResult> Register(string email, string password)
+        {
+            var registrationRequest = new RegistrationRequest() { Email = email, Password = password };
+            var ret = await _mobileServiceClient.InvokeApiAsync<RegistrationRequest, RegistrationResult>(
+                _customRegistrationController, registrationRequest);
+            return ret;
+        }
+
+
         public async Task<bool> Login(string email, string password)
         {
             var ret = await _mobileServiceClient.InvokeApiAsync<CustomLoginResult>(
-                _AuthControllerName, HttpMethod.Post, new Dictionary<string, string> {
+                _customLoginController, HttpMethod.Post, new Dictionary<string, string> {
                 { "email", email}, { "password", password}
             });
             _mobileServiceClient.CurrentUser = new MobileServiceUser(ret.Username)
@@ -118,11 +135,6 @@ namespace Xamarin.Droid.Utils.Services
             return true;
         }
 
-        private class CustomLoginResult
-        {
-            public string Token { get; set; }
-            public string Username { get; set; }
-        }
 
         /// <summary>
         /// Logouts user and removes his account from account store.
@@ -142,6 +154,7 @@ namespace Xamarin.Droid.Utils.Services
             RemoveTokenFromSecureStore();
             await _mobileServiceClient.LogoutAsync();
         }
+
 
         #endregion
 
