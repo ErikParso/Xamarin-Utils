@@ -42,9 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomAuthentication\AccountBase.cs" />
+    <Compile Include="CustomAuthentication\CustomAuthenticationContext.cs" />
     <Compile Include="CustomAuthentication\CustomLoginProviderUtils.cs" />
     <Compile Include="CustomAuthentication\CustomRegistrationControllerBase.cs" />
-    <Compile Include="CustomAuthentication\ICustomAuthenticationContext.cs" />
     <Compile Include="CustomAuthentication\Provider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
