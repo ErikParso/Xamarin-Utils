@@ -44,6 +44,7 @@ namespace Xamarin.Forms.Utils.Controls
             _viewModel = AppBase.CurrentAppContainer.Resolve<LoginViewModel>();
             BindingContext = _viewModel;
             _viewModel.UserAuthenticated += () => UserAuthenticated(this, EventArgs.Empty);
+            _viewModel.ActionPerformed += (s) => TestResult.Text = s;
         }
 
         public void Authenticate()

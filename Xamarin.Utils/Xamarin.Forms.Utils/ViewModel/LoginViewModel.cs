@@ -44,6 +44,8 @@ namespace Xamarin.Forms.Utils.ViewModel
 
         public Action UserAuthenticated { get; set; }
 
+        public Action<string> ActionPerformed { get; set; }
+
         public ICommand LoginCommand { get; set; }
 
         public ICommand LoginCustomCommand { get; set; }
@@ -83,35 +85,71 @@ namespace Xamarin.Forms.Utils.ViewModel
         private async void Login(MobileServiceAuthenticationProvider provider)
         {
             WorkInProgress = true;
-            if (await _authenticationService.Login(provider))
+            try
             {
-                UserAuthenticated?.Invoke();
+                if (await _authenticationService.Login(provider))
+                {
+                    UserAuthenticated?.Invoke();
+                    ActionPerformed("provider login successfull");
+                }
+                else
+                {
+                    ActionPerformed("provider login unsuccessfull");
+                }
+            }
+            catch (Exception e)
+            {
+                ActionPerformed("provider login failed with exception " + e.Message);
             }
             WorkInProgress = false;
         }
 
         private async void LoginCustom()
         {
-            if (!Email.Validate() | !Password.Validate())
-                return;
-
             WorkInProgress = true;
-            if (await _authenticationService.Login(Email.Value, Password.Value))
+            try
             {
-                UserAuthenticated?.Invoke();
+                if (!Email.Validate() | !Password.Validate())
+                    return;
+
+                if (await _authenticationService.Login(Email.Value, Password.Value))
+                {
+                    UserAuthenticated?.Invoke();
+                    ActionPerformed("custom login successfull");
+                }
+                else
+                {
+                    ActionPerformed("custom login unsuccessfull");
+                }
+            }
+            catch (Exception e)
+            {
+                ActionPerformed("custom login failed with exception " + e.Message);
             }
             WorkInProgress = false;
         }
 
         private async void Register()
         {
-            if (!Email.Validate() | !Password.Validate() | !ConfirmPassword.Validate())
-                return;
-
             WorkInProgress = true;
-            if (await _authenticationService.Register(Email.Value, Password.Value) == RegistrationResult.Registered)
+            try
             {
-                IsRegistration = false;
+                if (!Email.Validate() | !Password.Validate() | !ConfirmPassword.Validate())
+                    return;
+
+                if (await _authenticationService.Register(Email.Value, Password.Value) == RegistrationResult.Registered)
+                {
+                    IsRegistration = false;
+                    ActionPerformed("registration successfull");
+                }
+                else
+                {
+                    ActionPerformed("registration unsuccessfull");
+                }
+            }
+            catch (Exception e)
+            {
+                ActionPerformed("registration failed with exception " + e.Message);
             }
             WorkInProgress = false;
         }

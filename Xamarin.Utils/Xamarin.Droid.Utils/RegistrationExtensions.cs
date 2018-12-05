@@ -1,6 +1,5 @@
 ﻿using Android.Content;
 using Autofac;
-using Microsoft.WindowsAzure.MobileServices;
 using Xamarin.Droid.Utils.Services;
 using Xamarin.Forms.Utils.Services;
 
@@ -13,15 +12,15 @@ namespace Xamarin.Droid.Utils
             Context context,
             string uriScheme,
             string accountStorePassword,
-            string customLoginController,
-            string customRegistrationController)
+            string customLoginController = "CustomLogin",
+            string customRegistrationController = "CustomRegistration")
         {
             containerBuilder.RegisterType<AuthenticationService>().As<IAuthenticationService>()
             .WithParameter(new TypedParameter(typeof(Context), context))
-            .WithParameter("uriScheme", "balanse")
-            .WithParameter("accountStorePassword", "1234")
-            .WithParameter("customLoginController", "CustomLogin")
-            .WithParameter("customRegistrationController", "CustomRegistration")
+            .WithParameter("uriScheme", uriScheme)
+            .WithParameter("accountStorePassword", accountStorePassword)
+            .WithParameter("customLoginController", customLoginController)
+            .WithParameter("customRegistrationController", customRegistrationController)
             .SingleInstance();
         }
     }

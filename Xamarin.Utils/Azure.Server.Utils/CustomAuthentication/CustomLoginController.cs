@@ -3,8 +3,6 @@ using Microsoft.Azure.Mobile.Server.Login;
 using System;
 using System.IdentityModel.Tokens;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Web.Http;
 
@@ -50,7 +48,7 @@ namespace Azure.Server.Utils.CustomAuthentication
         }
 
         private JwtSecurityToken GetAuthenticationTokenForUser(string email)
-            => AppServiceLoginHandler.CreateToken(new Claim[] { new Claim(JwtRegisteredClaimNames.Email, email) },
+            => AppServiceLoginHandler.CreateToken(new Claim[] { new Claim(JwtRegisteredClaimNames.Sub, email) },
                     Environment.GetEnvironmentVariable("WEBSITE_AUTH_SIGNING_KEY"), _siteUrl, _siteUrl, _lifetime);
     }
 }

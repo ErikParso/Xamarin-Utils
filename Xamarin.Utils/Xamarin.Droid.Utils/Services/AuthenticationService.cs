@@ -13,10 +13,8 @@ using Xamarin.Forms.Utils.Services;
 namespace Xamarin.Droid.Utils.Services
 {
     /// <summary>
-    /// Authenticates current user stored in AccountStore. Tries to refresh account and chcecks token activity.
-    /// Authentication is successfull, if stored users token is valid.
-    /// Otherwise call Login method to log user and store his account in AccountStore.
-    /// Call Logout method to logout user and remove his account from account store.
+    /// Authentication service specified for android platform.
+    /// Use <see cref="RegistrationExtensions.RegisterAuthenticationService"/> to register this service.
     /// </summary>
     /// <seealso cref="IAuthenticationService" />
     public class AuthenticationService : IAuthenticationService
@@ -53,16 +51,16 @@ namespace Xamarin.Droid.Utils.Services
             _customLoginController = customLoginController;
         }
 
+
         #region Authenticate, Login, Logout
 
-
         /// <summary>
-        /// Tries to find user registered in Account store.
-        /// If successfull, tries to refresh his token and stores a new token in Account store.
-        /// If token refresh failed (facebook), checks token expiration.
-        /// If user not registerd in AccountStore or Refresh of expired token failed, authentication is unsuccessfull.
-        /// In this case call <see cref="Login(MobileServiceAuthenticationProvider)"/> method.
+        /// Finds first token stored in account store.
+        /// If successfull, tries to refresh and store token.
+        /// If token refresh failed (custom authentication or facebook obviously), checks token expiration.
+        /// If no token stored, authentication is unsuccessfull. In this case execute one of login methods.
         /// </summary>
+        /// <returns>Authentication result.</returns>
         public async Task<bool> Authenticate()
         {
             _mobileServiceClient.CurrentUser = RetrieveTokenFromSecureStore();
@@ -86,12 +84,14 @@ namespace Xamarin.Droid.Utils.Services
             }
         }
 
-
         /// <summary>
-        /// Logins user using specidied provider and stores his account in AccountStore for <see cref="Authenticate"/> method.
+        /// Logins user using provider and stores token in acount store.
+        /// Stored token will be used in <see cref="Authenticate"/> method.
+        /// Sets logged user to <see cref="MobileServiceClient.CurrentUser"/> and
+        /// access to authorized requests should be gratned.
         /// </summary>
         /// <param name="provider">The provider.</param>
-        /// <returns>If Login successfull, returns true, otherwise false.</returns>
+        /// <returns>Login result.</returns>
         public async Task<bool> Login(MobileServiceAuthenticationProvider provider)
         {
             var parameters = new Dictionary<string, string>{
@@ -111,7 +111,13 @@ namespace Xamarin.Droid.Utils.Services
             }
         }
 
-
+        /// <summary>
+        /// Registers new user using custom register controller. Access is to authorized requests is not granted.
+        /// Call <see cref="Login(string, string)"/> method for this purpose.
+        /// </summary>
+        /// <param name="email">The email.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>Registration result.</returns>
         public async Task<RegistrationResult> Register(string email, string password)
         {
             var registrationRequest = new RegistrationRequest() { Email = email, Password = password };
@@ -120,24 +126,38 @@ namespace Xamarin.Droid.Utils.Services
             return ret;
         }
 
-
+        /// <summary>
+        /// Logins user using custom login controller and stores token in account store.
+        /// Stored token will be used in <see cref="Authenticate"/> method.
+        /// Sets logged user to <see cref="MobileServiceClient.CurrentUser"/> and
+        /// access to authorized requests should be gratned.
+        /// </summary>
+        /// <param name="email">The email.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>Login result.</returns>
         public async Task<bool> Login(string email, string password)
         {
-            var ret = await _mobileServiceClient.InvokeApiAsync<CustomLoginResult>(
-                _customLoginController, HttpMethod.Post, new Dictionary<string, string> {
-                { "email", email}, { "password", password}
-            });
-            _mobileServiceClient.CurrentUser = new MobileServiceUser(ret.UserId)
+            var loginRequest = new CustomLoginRequest() { Email = email, Password = password };
+            var ret = await _mobileServiceClient.InvokeApiAsync<CustomLoginRequest, CustomLoginResult>(
+                _customLoginController, loginRequest);
+            if (ret != null)
             {
-                MobileServiceAuthenticationToken = ret.MobileServiceAuthenticationToken
-            };
-            StoreTokenInSecureStore(_mobileServiceClient.CurrentUser);
-            return true;
+                _mobileServiceClient.CurrentUser = new MobileServiceUser(ret.UserId)
+                {
+                    MobileServiceAuthenticationToken = ret.MobileServiceAuthenticationToken
+                };
+                StoreTokenInSecureStore(_mobileServiceClient.CurrentUser);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
-
 
         /// <summary>
         /// Logouts user and removes his account from account store.
+        /// Client is no more grantet to execute authorized requests.
         /// </summary>
         public async Task Logout()
         {
@@ -154,7 +174,6 @@ namespace Xamarin.Droid.Utils.Services
             RemoveTokenFromSecureStore();
             await _mobileServiceClient.LogoutAsync();
         }
-
 
         #endregion
 
