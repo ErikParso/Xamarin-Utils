@@ -13,15 +13,22 @@ namespace Xamarin.Forms.Utils.ViewModel
     internal class LoginViewModel : INotifyPropertyChanged
     {
         private readonly IAuthenticationService _authenticationService;
+        private readonly ICustomLoginService _customLoginService;
+        private readonly IProviderLoginService _providerLoginService;
         private bool _workInProgress;
         private bool _isRegistration;
         private ValidatableObject<string> _email;
         private ValidatableObject<string> _password;
         private ValidatableObject<string> _confirmPassword;
 
-        public LoginViewModel(IAuthenticationService authenticationService)
+        public LoginViewModel(
+            IAuthenticationService authenticationService,
+            ICustomLoginService customLoginService,
+            IProviderLoginService providerLoginService)
         {
             _authenticationService = authenticationService;
+            _customLoginService = customLoginService;
+            _providerLoginService = providerLoginService;
             LoginCommand = new Command<MobileServiceAuthenticationProvider>(Login);
             LoginCustomCommand = new Command(LoginCustom);
             RegisterCommand = new Command(Register);
@@ -87,7 +94,7 @@ namespace Xamarin.Forms.Utils.ViewModel
             WorkInProgress = true;
             try
             {
-                if (await _authenticationService.Login(provider))
+                if (await _providerLoginService.Login(provider))
                 {
                     UserAuthenticated?.Invoke();
                     ActionPerformed("provider login successfull");
@@ -112,7 +119,7 @@ namespace Xamarin.Forms.Utils.ViewModel
                 if (!Email.Validate() | !Password.Validate())
                     return;
 
-                if (await _authenticationService.Login(Email.Value, Password.Value))
+                if (await _customLoginService.Login(Email.Value, Password.Value))
                 {
                     UserAuthenticated?.Invoke();
                     ActionPerformed("custom login successfull");
@@ -137,7 +144,7 @@ namespace Xamarin.Forms.Utils.ViewModel
                 if (!Email.Validate() | !Password.Validate() | !ConfirmPassword.Validate())
                     return;
 
-                if (await _authenticationService.Register(Email.Value, Password.Value) == RegistrationResult.Registered)
+                if (await _customLoginService.Register(Email.Value, Password.Value) == RegistrationResult.Registered)
                 {
                     IsRegistration = false;
                     ActionPerformed("registration successfull");

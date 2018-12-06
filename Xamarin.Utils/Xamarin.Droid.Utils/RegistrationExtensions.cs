@@ -19,17 +19,22 @@ namespace Xamarin.Droid.Utils
                .WithParameter("serviceId", serviceId)
                .SingleInstance();
 
-        public static void RegisterAuthenticationService(
+        public static void RegisterCustomLoginService(
             this ContainerBuilder containerBuilder,
-            string uriScheme,
-            string customLoginController = "CustomLogin",
-            string customRegistrationController = "CustomRegistration")
-        {
-            containerBuilder.RegisterType<AuthenticationService>().As<IAuthenticationService>()
-            .WithParameter("uriScheme", uriScheme)
-            .WithParameter("customLoginController", customLoginController)
-            .WithParameter("customRegistrationController", customRegistrationController)
-            .SingleInstance();
-        }
+            string customRegistrationControllerName = "CustomRegistration",
+            string customLoginControllerName = "CustomLogin")
+            => containerBuilder.RegisterType<CustomLoginService>().As<ICustomLoginService>()
+               .WithParameter("customRegistrationControllerName", customRegistrationControllerName)
+               .WithParameter("customLoginControllerName", customLoginControllerName)
+               .SingleInstance();
+
+        public static void RegisterProviderLoginService(this ContainerBuilder containerBuilder, string uriScheme)
+            => containerBuilder.RegisterType<ProviderLoginService>().As<IProviderLoginService>()
+               .WithParameter("uriScheme", uriScheme)
+               .SingleInstance();
+
+        public static void RegisterAuthenticationService(this ContainerBuilder containerBuilder)
+            => containerBuilder.RegisterType<AuthenticationService>().As<IAuthenticationService>()
+               .SingleInstance();
     }
 }

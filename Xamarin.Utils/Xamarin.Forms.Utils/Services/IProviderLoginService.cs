@@ -3,10 +3,8 @@ using System.Threading.Tasks;
 
 namespace Xamarin.Forms.Utils.Services
 {
-    public interface IAuthenticationService
+    public interface IProviderLoginService
     {
-        Task<bool> Authenticate();
-
-        Task Logout();
+        Task<bool> Login(MobileServiceAuthenticationProvider provider);
     }
 }
