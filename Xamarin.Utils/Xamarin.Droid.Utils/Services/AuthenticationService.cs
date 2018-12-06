@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Xamarin.Auth;
 using Xamarin.Forms.Utils.Services;
 
 namespace Xamarin.Droid.Utils.Services
@@ -21,9 +20,8 @@ namespace Xamarin.Droid.Utils.Services
     {
         private readonly MobileServiceClient _mobileServiceClient;
         private readonly Context _context;
-        private readonly AccountStore _accountStore;
+        private readonly IAccountStoreService _accountStoreService;
         private readonly string _uriScheme;
-
         private readonly string _customRegistrationController;
         private readonly string _customLoginController;
 
@@ -38,15 +36,15 @@ namespace Xamarin.Droid.Utils.Services
         public AuthenticationService(
             Context context,
             MobileServiceClient mobileServiceClient,
+            IAccountStoreService accountStoreService,
             string uriScheme,
-            string accountStorePassword,
             string customLoginController,
             string customRegistrationController)
         {
             _mobileServiceClient = mobileServiceClient;
             _context = context;
+            _accountStoreService = accountStoreService;
             _uriScheme = uriScheme;
-            _accountStore = AccountStore.Create(context, accountStorePassword);
             _customRegistrationController = customRegistrationController;
             _customLoginController = customLoginController;
         }
@@ -63,14 +61,14 @@ namespace Xamarin.Droid.Utils.Services
         /// <returns>Authentication result.</returns>
         public async Task<bool> Authenticate()
         {
-            _mobileServiceClient.CurrentUser = RetrieveTokenFromSecureStore();
+            _mobileServiceClient.CurrentUser = _accountStoreService.RetrieveTokenFromSecureStore();
             if (_mobileServiceClient.CurrentUser != null)
             {
                 try
                 {
                     var refreshed = await _mobileServiceClient.RefreshUserAsync();
                     _mobileServiceClient.CurrentUser = refreshed;
-                    StoreTokenInSecureStore(refreshed);
+                    _accountStoreService.StoreTokenInSecureStore(refreshed);
                     return true;
                 }
                 catch (Exception e) //some providers doesn't support refresh
@@ -102,7 +100,7 @@ namespace Xamarin.Droid.Utils.Services
 
             if (_mobileServiceClient.CurrentUser != null)
             {
-                StoreTokenInSecureStore(_mobileServiceClient.CurrentUser);
+                _accountStoreService.StoreTokenInSecureStore(_mobileServiceClient.CurrentUser);
                 return true;
             }
             else
@@ -146,7 +144,7 @@ namespace Xamarin.Droid.Utils.Services
                 {
                     MobileServiceAuthenticationToken = ret.MobileServiceAuthenticationToken
                 };
-                StoreTokenInSecureStore(_mobileServiceClient.CurrentUser);
+                _accountStoreService.StoreTokenInSecureStore(_mobileServiceClient.CurrentUser);
                 return true;
             }
             else
@@ -171,51 +169,8 @@ namespace Xamarin.Droid.Utils.Services
                 await httpClient.GetAsync(authUri);
             }
 
-            RemoveTokenFromSecureStore();
+            _accountStoreService.ClearSecureStore();
             await _mobileServiceClient.LogoutAsync();
-        }
-
-        #endregion
-
-
-        #region Account store
-
-        private MobileServiceUser RetrieveTokenFromSecureStore()
-        {
-            var accounts = _accountStore.FindAccountsForService(_uriScheme);
-            if (accounts != null)
-            {
-                foreach (var acct in accounts)
-                {
-                    if (acct.Properties.TryGetValue("token", out string token))
-                    {
-                        return new MobileServiceUser(acct.Username)
-                        {
-                            MobileServiceAuthenticationToken = token
-                        };
-                    }
-                }
-            }
-            return null;
-        }
-
-        private void StoreTokenInSecureStore(MobileServiceUser user)
-        {
-            var account = new Account(user.UserId);
-            account.Properties.Add("token", user.MobileServiceAuthenticationToken);
-            _accountStore.Save(account, _uriScheme);
-        }
-
-        private void RemoveTokenFromSecureStore()
-        {
-            var accounts = _accountStore.FindAccountsForService(_uriScheme);
-            if (accounts != null)
-            {
-                foreach (var acct in accounts)
-                {
-                    _accountStore.Delete(acct, _uriScheme);
-                }
-            }
         }
 
         #endregion
