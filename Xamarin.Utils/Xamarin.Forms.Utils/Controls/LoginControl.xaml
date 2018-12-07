@@ -74,11 +74,11 @@
                 </Label>
                 <StackLayout VerticalOptions="End" IsVisible="{Binding Source={x:Reference this}, Path=Test}">
                     <controls:LineSplitter Text="Test active"/>
-                    <Button Text="Try authorized request" Clicked="TestRequestClick"/>
-                    <Button Text="Verify" Clicked="TestVerify"/>
-                    <Button Text="Try authenticate user" Clicked ="TestAuthenticateUser"/>
-                    <Button Text="Try logout user" Clicked="TestLogoutUser"/>
-                    <Label x:Name="TestResult" Text="Try authenticate user to verify, if current user is authorized with valid token. If user not authorized, login using providers or custom authentication."/>
+                    <Button Text="Authorized request" Clicked="TestRequestClick"/>
+                    <Button Text="Verify email" Clicked="TestVerify"/>
+                    <Button Text="Restore user" Clicked ="TestAuthenticateUser"/>
+                    <Button Text="Logout" Clicked="TestLogoutUser"/>
+                    <Label x:Name="TestResult" FontSize="Micro" Text="Try authorized request. If unauthorized, authenticate user. This loads user from secure store, tries to refresh token and authenticates him on server. If unsuccessfull, login with provider or custom accout. Execute Verify to send verification email for registered custom account."/>
                 </StackLayout>
 
             </StackLayout>
