@@ -47,6 +47,8 @@
     <Compile Include="CustomAuthentication\CustomLoginProviderUtils.cs" />
     <Compile Include="CustomAuthentication\CustomRegistrationController.cs" />
     <Compile Include="CustomAuthentication\Provider.cs" />
+    <Compile Include="CustomAuthentication\VerificationController.cs" />
+    <Compile Include="Email\IEmailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

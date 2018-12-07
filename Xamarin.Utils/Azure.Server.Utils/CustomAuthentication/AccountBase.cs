@@ -11,5 +11,9 @@ namespace Azure.Server.Utils.CustomAuthentication
         public byte[] Hash { get; set; }
 
         public Provider Provider { get; set; }
+
+        public bool Verified { get; set; }
+
+        public byte[] ConfirmationHash { get; set; }
     }
 }

@@ -75,6 +75,7 @@
                 <StackLayout VerticalOptions="End" IsVisible="{Binding Source={x:Reference this}, Path=Test}">
                     <controls:LineSplitter Text="Test active"/>
                     <Button Text="Try authorized request" Clicked="TestRequestClick"/>
+                    <Button Text="Verify" Clicked="TestVerify"/>
                     <Button Text="Try authenticate user" Clicked ="TestAuthenticateUser"/>
                     <Button Text="Try logout user" Clicked="TestLogoutUser"/>
                     <Label x:Name="TestResult" Text="Try authenticate user to verify, if current user is authorized with valid token. If user not authorized, login using providers or custom authentication."/>

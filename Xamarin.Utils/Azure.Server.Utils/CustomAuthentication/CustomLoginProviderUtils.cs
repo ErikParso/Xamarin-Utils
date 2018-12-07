@@ -1,9 +1,13 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Linq;
+using System.Security.Cryptography;
 
 namespace Azure.Server.Utils.CustomAuthentication
 {
     public static class CustomLoginProviderUtils
     {
+        private static Random random = new Random();
+
         public static byte[] Hash(string plaintext, byte[] salt)
         {
             SHA512Cng hashFunc = new SHA512Cng();
@@ -24,6 +28,8 @@ namespace Azure.Server.Utils.CustomAuthentication
 
         public static bool SlowEquals(byte[] a, byte[] b)
         {
+            if (a == null || b == null)
+                return false;
             int diff = a.Length ^ b.Length;
             for (int i = 0; i < a.Length && i < b.Length; i++)
             {
@@ -32,5 +38,11 @@ namespace Azure.Server.Utils.CustomAuthentication
             return diff == 0;
         }
 
+        public static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
     }
 }

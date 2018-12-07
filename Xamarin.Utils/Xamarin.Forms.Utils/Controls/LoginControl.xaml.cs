@@ -94,6 +94,20 @@ namespace Xamarin.Forms.Utils.Controls
             }
         }
 
+        private async void TestVerify(object sender, EventArgs e)
+        {
+            try
+            {
+                var service = AppBase.CurrentAppContainer.Resolve<IVerificationService>();
+                await service.Verify();
+                TestResult.Text = "Verification method executed";
+            }
+            catch (Exception ex)
+            {
+                TestResult.Text = ex.Message;
+            }
+        }
+
         private void CreateNewAccountClick(object sender, EventArgs e)
         {
             _viewModel.IsRegistration = true;

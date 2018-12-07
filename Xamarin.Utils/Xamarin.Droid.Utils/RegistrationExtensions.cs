@@ -36,5 +36,12 @@ namespace Xamarin.Droid.Utils
         public static void RegisterAuthenticationService(this ContainerBuilder containerBuilder)
             => containerBuilder.RegisterType<AuthenticationService>().As<IAuthenticationService>()
                .SingleInstance();
+
+        public static void RegisterVerificationService(
+            this ContainerBuilder containerBuilder,
+            string verificationControllerName = "Verification")
+            => containerBuilder.RegisterType<VerificationService>().As<IVerificationService>()
+               .WithParameter("verificationControllerName", verificationControllerName)
+               .SingleInstance();
     }
 }
