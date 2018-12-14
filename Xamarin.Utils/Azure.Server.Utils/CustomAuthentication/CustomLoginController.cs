@@ -48,7 +48,11 @@ namespace Azure.Server.Utils.CustomAuthentication
         }
 
         private JwtSecurityToken GetAuthenticationTokenForUser(string email)
-            => AppServiceLoginHandler.CreateToken(new Claim[] { new Claim(JwtRegisteredClaimNames.Sub, email) },
-                    Environment.GetEnvironmentVariable("WEBSITE_AUTH_SIGNING_KEY"), _siteUrl, _siteUrl, _lifetime);
+            => AppServiceLoginHandler.CreateToken(new Claim[]
+               {
+                   new Claim(JwtRegisteredClaimNames.Sub, email),
+                   new Claim(ClaimTypes.NameIdentifier, "custom"),
+                   new Claim(JwtRegisteredClaimNames.Email, email)
+               }, Environment.GetEnvironmentVariable("WEBSITE_AUTH_SIGNING_KEY"), _siteUrl, _siteUrl, _lifetime);
     }
 }

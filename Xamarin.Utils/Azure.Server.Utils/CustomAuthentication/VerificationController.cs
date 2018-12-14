@@ -1,11 +1,10 @@
-﻿using Azure.Server.Utils.Communication.Authentication;
-using Azure.Server.Utils.Email;
+﻿using Azure.Server.Utils.Email;
+using Azure.Server.Utils.Extensions;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Web.Http;
 
 namespace Azure.Server.Utils.CustomAuthentication
@@ -25,7 +24,7 @@ namespace Azure.Server.Utils.CustomAuthentication
         [Authorize]
         public void PostVerify()
         {
-            var email = GetUserId(User);
+            var email = this.GetCurrentUserClaim(ClaimTypes.NameIdentifier);
             T account = _context.Accounts
                 .Where(a => a.Provider == Provider.Custom)
                 .Where(a => a.Sid == email)
@@ -80,12 +79,5 @@ namespace Azure.Server.Utils.CustomAuthentication
 
         private string CreateConfirmationLink(string email, string confirmationKey)
             => Request.RequestUri + $"?ZUMO-API-VERSION=2.0.0&email={email}" + $"&key={confirmationKey}";
-
-        private string GetUserId(IPrincipal user)
-        {
-            ClaimsPrincipal claimsUser = (ClaimsPrincipal)user;
-            string sid = claimsUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-            return sid;
-        }
     }
 }
