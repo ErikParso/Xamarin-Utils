@@ -78,6 +78,7 @@
                     <Button Text="Verify email" Clicked="TestVerify"/>
                     <Button Text="Restore user" Clicked ="TestAuthenticateUser"/>
                     <Button Text="Logout" Clicked="TestLogoutUser"/>
+                    <Button Text="Current user" Clicked="TestGetCurrentUserInfo"/>
                     <Label x:Name="TestResult" FontSize="Micro" Text="Try authorized request. If unauthorized, authenticate user. This loads user from secure store, tries to refresh token and authenticates him on server. If unsuccessfull, login with provider or custom accout. Execute Verify to send verification email for registered custom account."/>
                 </StackLayout>
 

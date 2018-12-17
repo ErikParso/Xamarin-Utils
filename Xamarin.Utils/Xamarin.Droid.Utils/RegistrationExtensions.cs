@@ -43,5 +43,12 @@ namespace Xamarin.Droid.Utils
             => containerBuilder.RegisterType<VerificationService>().As<IVerificationService>()
                .WithParameter("verificationControllerName", verificationControllerName)
                .SingleInstance();
+
+        public static void RegisterAccountInformationService(
+            this ContainerBuilder containerBuilder,
+            string accountsControllerName = "Accounts")
+            => containerBuilder.RegisterType<AccountInformationService>().As<IAccountInformationService>()
+               .WithParameter("accountsControllerName", accountsControllerName)
+               .SingleInstance();
     }
 }

@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="CustomAuthentication\AccountBase.cs" />
     <Compile Include="CustomAuthentication\CustomAuthenticationContext.cs" />
+    <Compile Include="CustomAuthentication\AccountsController.cs" />
     <Compile Include="CustomAuthentication\CustomLoginController.cs" />
     <Compile Include="CustomAuthentication\CustomLoginProviderUtils.cs" />
     <Compile Include="CustomAuthentication\CustomRegistrationController.cs" />

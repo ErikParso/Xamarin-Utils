@@ -108,6 +108,19 @@ namespace Xamarin.Forms.Utils.Controls
             }
         }
 
+        private async void TestGetCurrentUserInfo(object sender, EventArgs e)
+        {
+            try
+            {
+                var service = AppBase.CurrentAppContainer.Resolve<IAccountInformationService>();
+                TestResult.Text = (await service.GetCurrentAccountInformation()).ToString();
+            }
+            catch (Exception ex)
+            {
+                TestResult.Text = ex.Message;
+            }
+        }
+
         private void CreateNewAccountClick(object sender, EventArgs e)
         {
             _viewModel.IsRegistration = true;
@@ -117,7 +130,6 @@ namespace Xamarin.Forms.Utils.Controls
         {
             _viewModel.IsRegistration = false;
         }
-
 
         #region Showing validation errors
 
