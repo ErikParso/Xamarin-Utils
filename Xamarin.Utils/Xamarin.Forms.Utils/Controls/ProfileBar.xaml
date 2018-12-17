@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Xamarin.Forms.Utils.Controls.ProfileBar">
+  <ContentView.Content>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Image Source="{Binding Photo}" Grid.Column="0"/>
+            <Label Text="{Binding Name}" Grid.Column="1"/>
+            <Button Text="Logout" Grid.Column="2" Clicked="LogoutButton_Clicked"/>
+        </Grid>
+    </ContentView.Content>
+</ContentView>

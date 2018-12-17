@@ -28,6 +28,7 @@ namespace Xamarin.Forms.Utils
         private void RegisterUtilsTypes(ContainerBuilder builder)
         {
             builder.RegisterType<LoginViewModel>().SingleInstance();
+            builder.RegisterType<ProfileBarViewModel>().SingleInstance();
         }
 
         protected abstract void RegisterSharedTypes(ContainerBuilder builder);
