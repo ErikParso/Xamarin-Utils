@@ -36,7 +36,7 @@
                         TextColor="{StaticResource GoogleTextColor}"
                         BackgroundColor="{StaticResource GoogleColor}"
                         Command="{Binding LoginCommand}"
-                        CommandParameter="{x:Static login:MobileServiceAuthenticationProvider.Facebook}"/>
+                        CommandParameter="{x:Static login:MobileServiceAuthenticationProvider.Google}"/>
                 <controls:LineSplitter Text="or"/>
 
                 <controls:ValidationEntry HeightRequest="36" ValidatableString="{Binding Email}"
