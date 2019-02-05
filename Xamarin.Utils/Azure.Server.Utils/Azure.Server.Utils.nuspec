@@ -2,13 +2,13 @@
 <package >
   <metadata>
     <id>Igloo.Azure.Server.Utils</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <title>Azure.Server.Utils</title>
     <authors>Erik Parso</authors>
     <owners>Igloo</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Azure server utilities.</description>
-    <releaseNotes>Package initialization.</releaseNotes>
+    <releaseNotes>Upgrade packages.</releaseNotes>
     <copyright>Copyright 2019</copyright>
     <tags>Azure server mobile app authentication</tags>
   </metadata>
