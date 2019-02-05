@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Xamarin.Forms utils.</Description>
+    <Authors>Erik Parso</Authors>
+    <PackageTags>Xaamrin.Forms, utils, authentication, base app</PackageTags>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Company>Igloo</Company>
+    <PackageId>Igloo.Xamarin.Forms.Utils</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

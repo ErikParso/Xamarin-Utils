@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Erik Parso</Authors>
+    <Description>Azure.Server.Utils communication library.</Description>
+    <PackageTags>Azure zerver communication authentication</PackageTags>
+    <PackageReleaseNotes>Package initialization.</PackageReleaseNotes>
+    <PackageId>Igloo.Azure.Server.Utils.Communication</PackageId>
+    <Product>Azure.Server.Utils.Communication</Product>
+    <Company>Igloo</Company>
   </PropertyGroup>
 
 </Project>
