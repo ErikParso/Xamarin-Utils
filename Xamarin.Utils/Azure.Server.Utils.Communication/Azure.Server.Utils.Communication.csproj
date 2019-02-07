@@ -5,10 +5,11 @@
     <Authors>Erik Parso</Authors>
     <Description>Azure.Server.Utils communication library.</Description>
     <PackageTags>Azure zerver communication authentication</PackageTags>
-    <PackageReleaseNotes>Package initialization.</PackageReleaseNotes>
+    <PackageReleaseNotes>Custom authentication with refresh token.</PackageReleaseNotes>
     <PackageId>Igloo.Azure.Server.Utils.Communication</PackageId>
     <Product>Azure.Server.Utils.Communication</Product>
     <Company>Igloo</Company>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
 </Project>

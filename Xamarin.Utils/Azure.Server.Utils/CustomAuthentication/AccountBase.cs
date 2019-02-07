@@ -15,5 +15,7 @@ namespace Azure.Server.Utils.CustomAuthentication
         public bool Verified { get; set; }
 
         public byte[] ConfirmationHash { get; set; }
+
+        public string RefreshToken { get; set; }
     }
 }
