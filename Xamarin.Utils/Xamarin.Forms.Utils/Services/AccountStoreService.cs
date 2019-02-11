@@ -1,5 +1,5 @@
-﻿using Microsoft.WindowsAzure.MobileServices;
-using Xamarin.Auth;
+﻿using Xamarin.Auth;
+using Xamarin.Forms.Utils.Models;
 
 namespace Xamarin.Forms.Utils.Services
 {
@@ -14,18 +14,21 @@ namespace Xamarin.Forms.Utils.Services
             _serviceId = serviceId;
         }
 
-        public MobileServiceUser RetrieveTokenFromSecureStore()
+        public RefreshTokenInfo RetrieveTokenFromSecureStore()
         {
             var accounts = _accountStore.FindAccountsForService(_serviceId);
             if (accounts != null)
             {
                 foreach (var acct in accounts)
                 {
-                    if (acct.Properties.TryGetValue("token", out string token))
+                    if (acct.Properties.TryGetValue("token", out string token) &&
+                        acct.Properties.TryGetValue("provider", out string provider))
                     {
-                        return new MobileServiceUser(acct.Username)
+                        return new RefreshTokenInfo()
                         {
-                            MobileServiceAuthenticationToken = token
+                            UserId = acct.Username,
+                            RefreshToken = token,
+                            Provider = provider
                         };
                     }
                 }
@@ -33,10 +36,12 @@ namespace Xamarin.Forms.Utils.Services
             return null;
         }
 
-        public void StoreTokenInSecureStore(MobileServiceUser user)
+        public void StoreTokenInSecureStore(RefreshTokenInfo user)
         {
+            ClearSecureStore();
             var account = new Account(user.UserId);
-            account.Properties.Add("token", user.MobileServiceAuthenticationToken);
+            account.Properties.Add("token", user.RefreshToken);
+            account.Properties.Add("provider", user.Provider);
             _accountStore.Save(account, _serviceId);
         }
 

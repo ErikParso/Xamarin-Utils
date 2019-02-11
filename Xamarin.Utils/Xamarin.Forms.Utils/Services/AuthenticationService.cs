@@ -1,9 +1,12 @@
-﻿using Microsoft.WindowsAzure.MobileServices;
+﻿using Azure.Server.Utils.Communication.Authentication;
+using Microsoft.WindowsAzure.MobileServices;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms.Utils.Models;
 
 namespace Xamarin.Forms.Utils.Services
 {
@@ -16,11 +19,16 @@ namespace Xamarin.Forms.Utils.Services
     {
         private readonly MobileServiceClient _mobileServiceClient;
         private readonly IAccountStoreService _accountStoreService;
+        private readonly string _customLoginControllerName;
 
-        public AuthenticationService(MobileServiceClient mobileServiceClient, IAccountStoreService accountStoreService)
+        public AuthenticationService(
+            MobileServiceClient mobileServiceClient,
+            IAccountStoreService accountStoreService,
+            string customLoginControllerName)
         {
             _mobileServiceClient = mobileServiceClient;
             _accountStoreService = accountStoreService;
+            _customLoginControllerName = customLoginControllerName;
         }
 
         /// <summary>
@@ -30,26 +38,57 @@ namespace Xamarin.Forms.Utils.Services
         /// If no token stored, authentication is unsuccessfull. In this case execute one of login methods.
         /// </summary>
         /// <returns>Authentication result.</returns>
-        public async Task<bool> Authenticate()
+        public async Task<string> Authenticate()
         {
-            _mobileServiceClient.CurrentUser = _accountStoreService.RetrieveTokenFromSecureStore();
-            if (_mobileServiceClient.CurrentUser != null)
+            var refreshTokenInfo = _accountStoreService.RetrieveTokenFromSecureStore();
+            if (refreshTokenInfo == null)
+                return string.Empty;
+            if (refreshTokenInfo.Provider == "custom")
+                return await CustomProviderAuthentication(refreshTokenInfo);
+            else
+                return await IdentityProviderAuthentication(refreshTokenInfo);
+        }
+
+        private async Task<string> CustomProviderAuthentication(RefreshTokenInfo refreshTokenInfo)
+        {
+            var ret = await _mobileServiceClient.InvokeApiAsync<CustomLoginResult>(
+                _customLoginControllerName, HttpMethod.Get, new Dictionary<string, string> {
+                    { "userId", refreshTokenInfo.UserId }, { "refreshToken", refreshTokenInfo.RefreshToken }
+                });
+            if (ret != null)
             {
-                try
+                _mobileServiceClient.CurrentUser = new MobileServiceUser(ret.UserId)
                 {
-                    var refreshed = await _mobileServiceClient.RefreshUserAsync();
-                    _mobileServiceClient.CurrentUser = refreshed;
-                    _accountStoreService.StoreTokenInSecureStore(refreshed);
-                    return true;
-                }
-                catch (Exception e) //some providers doesn't support refresh
-                {
-                    return IsTokenActive(_mobileServiceClient.CurrentUser.MobileServiceAuthenticationToken);
-                }
+                    MobileServiceAuthenticationToken = ret.MobileServiceAuthenticationToken
+                };
+                refreshTokenInfo.RefreshToken = ret.RefreshToken;
+                _accountStoreService.StoreTokenInSecureStore(refreshTokenInfo);
+                return _mobileServiceClient.CurrentUser.MobileServiceAuthenticationToken;
             }
-            else //No stored account
+            else
             {
-                return false;
+                return string.Empty;
+            }
+        }
+
+        private async Task<string> IdentityProviderAuthentication(RefreshTokenInfo refreshTokenInfo)
+        {
+            _mobileServiceClient.CurrentUser = new MobileServiceUser(refreshTokenInfo.UserId)
+            {
+                MobileServiceAuthenticationToken = refreshTokenInfo.RefreshToken
+            };
+            try
+            {
+                var refreshed = await _mobileServiceClient.RefreshUserAsync();
+                _mobileServiceClient.CurrentUser = refreshed;
+                refreshTokenInfo.RefreshToken = refreshed.MobileServiceAuthenticationToken;
+                _accountStoreService.StoreTokenInSecureStore(refreshTokenInfo);
+                return _mobileServiceClient.CurrentUser.MobileServiceAuthenticationToken;
+            }
+            catch //some providers doesn't support refresh
+            {
+                return IsTokenActive(_mobileServiceClient.CurrentUser.MobileServiceAuthenticationToken) ?
+                    _mobileServiceClient.CurrentUser.MobileServiceAuthenticationToken : string.Empty;
             }
         }
 

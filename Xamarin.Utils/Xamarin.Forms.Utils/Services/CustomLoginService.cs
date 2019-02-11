@@ -1,6 +1,7 @@
 ﻿using Azure.Server.Utils.Communication.Authentication;
 using Microsoft.WindowsAzure.MobileServices;
 using System.Threading.Tasks;
+using Xamarin.Forms.Utils.Models;
 
 namespace Xamarin.Forms.Utils.Services
 {
@@ -58,7 +59,12 @@ namespace Xamarin.Forms.Utils.Services
                 {
                     MobileServiceAuthenticationToken = ret.MobileServiceAuthenticationToken
                 };
-                _accountStoreService.StoreTokenInSecureStore(_mobileServiceClient.CurrentUser);
+                _accountStoreService.StoreTokenInSecureStore(new RefreshTokenInfo()
+                {
+                    UserId = ret.UserId,
+                    Provider = "custom",
+                    RefreshToken = ret.RefreshToken,
+                });
                 return true;
             }
             else

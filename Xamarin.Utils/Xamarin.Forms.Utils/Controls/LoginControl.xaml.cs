@@ -71,7 +71,7 @@ namespace Xamarin.Forms.Utils.Controls
             try
             {
                 var service = AppBase.CurrentAppContainer.Resolve<IAuthenticationService>();
-                bool result = await service.Authenticate();
+                string result = await service.Authenticate();
                 TestResult.Text = $"Autthentication result {result}";
             }
             catch (Exception ex)

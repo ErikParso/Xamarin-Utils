@@ -2,6 +2,7 @@
 using Microsoft.WindowsAzure.MobileServices;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Xamarin.Forms.Utils.Models;
 using Xamarin.Forms.Utils.Services;
 
 namespace Xamarin.Droid.Utils.Services
@@ -43,7 +44,12 @@ namespace Xamarin.Droid.Utils.Services
 
             if (_mobileServiceClient.CurrentUser != null)
             {
-                _accountStoreService.StoreTokenInSecureStore(_mobileServiceClient.CurrentUser);
+                _accountStoreService.StoreTokenInSecureStore(new RefreshTokenInfo()
+                {
+                    UserId = _mobileServiceClient.CurrentUser.UserId,
+                    Provider = provider.ToString(),
+                    RefreshToken = _mobileServiceClient.CurrentUser.MobileServiceAuthenticationToken
+                });
                 return true;
             }
             else

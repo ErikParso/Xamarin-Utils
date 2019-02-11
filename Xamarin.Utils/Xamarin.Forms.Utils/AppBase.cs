@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Microsoft.WindowsAzure.MobileServices;
 using System;
+using System.Net.Http;
 using Xamarin.Forms.Utils.ViewModel;
 
 namespace Xamarin.Forms.Utils
@@ -32,6 +33,8 @@ namespace Xamarin.Forms.Utils
 
         private void RegisterUtilsTypes(ContainerBuilder builder)
         {
+            builder.RegisterType<RefreshTokenHandler>()
+                .As<HttpMessageHandler>();
             builder.RegisterType<MobileServiceClient>()
                 .WithParameter(new TypedParameter(typeof(string), ApplicationUrl))
                 .SingleInstance();

@@ -164,7 +164,7 @@ namespace Xamarin.Forms.Utils.ViewModel
         public async void Authenticate()
         {
             WorkInProgress = true;
-            if (await _authenticationService.Authenticate())
+            if (!string.IsNullOrWhiteSpace(await _authenticationService.Authenticate()))
             {
                 UserAuthenticated?.Invoke();
             }

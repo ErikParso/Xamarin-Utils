@@ -33,8 +33,11 @@ namespace Xamarin.Droid.Utils
                .WithParameter("uriScheme", uriScheme)
                .SingleInstance();
 
-        public static void RegisterAuthenticationService(this ContainerBuilder containerBuilder)
+        public static void RegisterAuthenticationService(
+            this ContainerBuilder containerBuilder,
+            string customLoginControllerName = "CustomLogin")
             => containerBuilder.RegisterType<AuthenticationService>().As<IAuthenticationService>()
+               .WithParameter("customLoginControllerName", customLoginControllerName)
                .SingleInstance();
 
         public static void RegisterVerificationService(

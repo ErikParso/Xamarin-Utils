@@ -1,12 +1,13 @@
 ﻿using Microsoft.WindowsAzure.MobileServices;
+using Xamarin.Forms.Utils.Models;
 
 namespace Xamarin.Forms.Utils.Services
 {
     public interface IAccountStoreService
     {
-        MobileServiceUser RetrieveTokenFromSecureStore();
+        RefreshTokenInfo RetrieveTokenFromSecureStore();
 
-        void StoreTokenInSecureStore(MobileServiceUser user);
+        void StoreTokenInSecureStore(RefreshTokenInfo refreshTokenInfo);
 
         void ClearSecureStore();
     }

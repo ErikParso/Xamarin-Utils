@@ -5,7 +5,7 @@ namespace Xamarin.Forms.Utils.Services
 {
     public interface IAuthenticationService
     {
-        Task<bool> Authenticate();
+        Task<string> Authenticate();
 
         Task Logout();
     }
