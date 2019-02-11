@@ -38,13 +38,13 @@ namespace Xamarin.Forms.Utils.ViewModel
 
         private void AddValidations()
         {
-            Email = new ValidatableObject<string>(true) { Value = "parsoerik@gmail.com" };
+            Email = new ValidatableObject<string>(true) { Value = "" };
             Email.RegisterValidationRule(new IsNotNullOrEmptyRule() { ValidationMessage = "Email is required." });
             Email.RegisterValidationRule(new EmailRule() { ValidationMessage = "Provide The valid email address." });
-            Password = new ValidatableObject<string>(true) { Value = "@ReneMladencaStrastiASkusenost1" };
+            Password = new ValidatableObject<string>(true) { Value = "" };
             Password.RegisterValidationRule(new IsNotNullOrEmptyRule() { ValidationMessage = "Password is required." });
             Password.RegisterValidationRule(new PasswordRule(false, true, true, true, 8) { ValidationMessage = "Passwords must be 8 more characters in length. Must contain at least 1 upper, 1 numeric and 1 special character." });
-            ConfirmPassword = new ValidatableObject<string>(true) { Value = "@ReneMladencaStrastiASkusenost1" };
+            ConfirmPassword = new ValidatableObject<string>(true) { Value = "" };
             ConfirmPassword.RegisterValidationRule(new IsNotNullOrEmptyRule() { ValidationMessage = "Confirm password is required." });
             ConfirmPassword.RegisterValidationRule(new ConfirmPasswordRule(() => Password.Value) { ValidationMessage = "Password and confirm password are not same." });
         }
@@ -108,7 +108,10 @@ namespace Xamarin.Forms.Utils.ViewModel
             {
                 ActionPerformed("provider login failed with exception " + e.Message);
             }
-            WorkInProgress = false;
+            finally
+            {
+                WorkInProgress = false;
+            }
         }
 
         private async void LoginCustom()
@@ -133,7 +136,10 @@ namespace Xamarin.Forms.Utils.ViewModel
             {
                 ActionPerformed("custom login failed with exception " + e.Message);
             }
-            WorkInProgress = false;
+            finally
+            {
+                WorkInProgress = false;
+            }
         }
 
         private async void Register()
@@ -158,7 +164,10 @@ namespace Xamarin.Forms.Utils.ViewModel
             {
                 ActionPerformed("registration failed with exception " + e.Message);
             }
-            WorkInProgress = false;
+            finally
+            {
+                WorkInProgress = false;
+            }
         }
 
         public async void Authenticate()
