@@ -1,7 +1,5 @@
-﻿using Autofac;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms.Utils.Services;
@@ -10,12 +8,7 @@ namespace Xamarin.Forms.Utils
 {
     public class RefreshTokenHandler : DelegatingHandler
     {
-        private readonly IAccountStoreService _accountStoreService;
-
-        public RefreshTokenHandler(IAccountStoreService accountStoreService)
-        {
-            _accountStoreService = accountStoreService;
-        }
+        public IAuthenticationService AuthenticationService { get; set; }
 
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
@@ -24,7 +17,7 @@ namespace Xamarin.Forms.Utils
             {
                 return response;
             }
-            var newAccessToken = await AppBase.CurrentAppContainer.Resolve<IAuthenticationService>().Authenticate();
+            var newAccessToken = await AuthenticationService.Authenticate();
             if (string.IsNullOrWhiteSpace(newAccessToken))
             {
                 return response;
