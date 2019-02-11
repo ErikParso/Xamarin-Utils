@@ -2,13 +2,13 @@
 <package >
   <metadata>
     <id>Igloo.Xamarin.Droid.Utils</id>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
     <title>Xamarin.Droid.Utils</title>
     <authors>Erik Parso</authors>
     <owners>Igloo</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Xamarin.Forms utilities for android.</description>
-    <releaseNotes>Package initialization.</releaseNotes>
+    <releaseNotes>Token refresh.</releaseNotes>
     <copyright>Copyright 2019</copyright>
     <tags>Xamarin.Forms, Android, utilities, authentication</tags>
   </metadata>
