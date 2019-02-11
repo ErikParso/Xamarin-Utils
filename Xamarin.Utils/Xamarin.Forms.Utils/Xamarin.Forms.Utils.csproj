@@ -8,8 +8,8 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Company>Igloo</Company>
     <PackageId>Igloo.Xamarin.Forms.Utils</PackageId>
-    <Version>1.0.2</Version>
-    <PackageReleaseNotes>Token refresh.</PackageReleaseNotes>
+    <Version>1.0.2.1</Version>
+    <PackageReleaseNotes>Removed default login values.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
