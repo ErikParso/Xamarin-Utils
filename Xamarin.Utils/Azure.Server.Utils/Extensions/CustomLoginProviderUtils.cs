@@ -4,11 +4,11 @@ using System.Security.Cryptography;
 
 namespace Azure.Server.Utils.CustomAuthentication
 {
-    public static class CustomLoginProviderUtils
+    internal static class CustomLoginProviderUtils
     {
         private static Random random = new Random();
 
-        public static byte[] Hash(string plaintext, byte[] salt)
+        internal static byte[] Hash(string plaintext, byte[] salt)
         {
             SHA512Cng hashFunc = new SHA512Cng();
             byte[] plainBytes = System.Text.Encoding.ASCII.GetBytes(plaintext);
@@ -18,7 +18,7 @@ namespace Azure.Server.Utils.CustomAuthentication
             return hashFunc.ComputeHash(toHash);
         }
 
-        public static byte[] GenerateSalt()
+        internal static byte[] GenerateSalt()
         {
             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
             byte[] salt = new byte[256];
@@ -26,7 +26,7 @@ namespace Azure.Server.Utils.CustomAuthentication
             return salt;
         }
 
-        public static bool SlowEquals(byte[] a, byte[] b)
+        internal static bool SlowEquals(byte[] a, byte[] b)
         {
             if (a == null || b == null)
                 return false;
@@ -38,14 +38,14 @@ namespace Azure.Server.Utils.CustomAuthentication
             return diff == 0;
         }
 
-        public static string RandomString(int length)
+        internal static string RandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public static string GenerateRefreshToken()
+        internal static string GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
             using (var rng = RandomNumberGenerator.Create())

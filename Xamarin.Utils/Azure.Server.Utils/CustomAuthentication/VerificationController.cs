@@ -1,5 +1,6 @@
 ﻿using Azure.Server.Utils.Email;
 using Azure.Server.Utils.Extensions;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -9,13 +10,14 @@ using System.Web.Http;
 
 namespace Azure.Server.Utils.CustomAuthentication
 {
-    public class VerificationController<T> : ApiController
-        where T : AccountBase, new()
+    public abstract class VerificationController<C, A> : ApiController
+        where C : DbContext
+        where A : AccountBase, new()
     {
-        private readonly CustomAuthenticationContext<T> _context;
-        private readonly IEmailService _emailService;
+        private readonly C _context;
+        private readonly IEmailService<A> _emailService;
 
-        public VerificationController(CustomAuthenticationContext<T> context, IEmailService emailService)
+        public VerificationController(C context, IEmailService<A> emailService)
         {
             _context = context;
             _emailService = emailService;
@@ -24,10 +26,10 @@ namespace Azure.Server.Utils.CustomAuthentication
         [Authorize]
         public void PostVerify()
         {
-            var email = this.GetCurrentUserClaim(ClaimTypes.NameIdentifier);
-            T account = _context.Accounts
-                .Where(a => a.Provider == Provider.Custom)
-                .Where(a => a.Sid == email)
+            var userId = this.GetCurrentUserClaim(ClaimTypes.NameIdentifier);
+            A account = GetAccountsDbSet(_context)
+                .Where(a => a.Provider == "Federation")
+                .Where(a => a.Sid == userId)
                 .SingleOrDefault();
             if (account != null)
             {
@@ -35,16 +37,16 @@ namespace Azure.Server.Utils.CustomAuthentication
                 account.ConfirmationHash = CustomLoginProviderUtils.Hash(confirmationKey, account.Salt);
                 account.Verified = false;
                 _context.SaveChanges();
-                _emailService.SendEmail("Account confirmation", CreateConfirmationLink(email, confirmationKey), email);
+                _emailService.SendEmail("Account confirmation", CreateConfirmationLink(userId, confirmationKey), account);
             }
         }
 
-        public HttpResponseMessage GetVerify(string email, string key)
+        public HttpResponseMessage GetVerify(string userId, string key)
         {
             string result = null;
-            T account = _context.Accounts
-                .Where(a => a.Provider == Provider.Custom)
-                .Where(a => a.Sid == email)
+            A account = GetAccountsDbSet(_context)
+                .Where(a => a.Provider == "Federation")
+                .Where(a => a.Sid == userId)
                 .SingleOrDefault();
             if (account != null)
             {
@@ -77,7 +79,9 @@ namespace Azure.Server.Utils.CustomAuthentication
             return response;
         }
 
-        private string CreateConfirmationLink(string email, string confirmationKey)
-            => Request.RequestUri + $"?ZUMO-API-VERSION=2.0.0&email={email}" + $"&key={confirmationKey}";
+        protected abstract DbSet<A> GetAccountsDbSet(C fromContext);
+
+        private string CreateConfirmationLink(string userId, string confirmationKey)
+            => Request.RequestUri + $"?ZUMO-API-VERSION=2.0.0&userId={userId}" + $"&key={confirmationKey}";
     }
 }

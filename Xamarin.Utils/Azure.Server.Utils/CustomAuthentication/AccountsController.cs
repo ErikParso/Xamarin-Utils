@@ -1,56 +1,76 @@
 ﻿using Azure.Server.Utils.Extensions;
 using System;
-using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
 using System.Web.Http;
 
 namespace Azure.Server.Utils.CustomAuthentication
 {
-    public abstract class AccountsController<T> : ApiController
-        where T : AccountBase, new()
+    /// <summary>
+    /// Provides account information for current user.
+    /// </summary>
+    /// <typeparam name="C">Db context.</typeparam>
+    /// <typeparam name="A">Account entity.</typeparam>
+    /// <seealso cref="ApiController" />
+    public abstract class AccountsController<C, A> : ApiController
+        where C : DbContext
+        where A : AccountBase, new()
     {
-        private readonly CustomAuthenticationContext<T> _context;
-        private readonly Dictionary<string, Provider> _providers;
+        private readonly C _context;
 
-        public AccountsController(CustomAuthenticationContext<T> context)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccountsController{C, A}"/> class.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        public AccountsController(C context)
         {
             _context = context;
-            _providers = new Dictionary<string, Provider>()
-            {
-                { "google", Provider.Google}, { "facebook", Provider.Facebook }
-            };
         }
 
+        /// <summary>
+        /// Gets account for current user. Creates one if not exists.
+        /// </summary>
         [HttpPost]
         [Authorize]
-        public T GetCurrent()
+        public A GetCurrentAccount()
         {
+            DbSet<A> accounts = GetAccountsDbSet(_context);
             var sid = this.GetCurrentUserClaim(ClaimTypes.NameIdentifier);
-            var acc = _context.Accounts.FirstOrDefault(a => a.Sid == sid);
+            // try get account base instance for current user
+            A acc = GetAccountsDbSet(_context)
+                .Where(a => a.Provider == User.Identity.AuthenticationType)
+                .Where(a => a.Sid == sid)
+                .SingleOrDefault();
+            // if not found, create account base info
             if (acc == null)
             {
-                acc = CreateAccount();
-                _context.Accounts.Add(acc);
-                _context.SaveChanges();
+                acc = CreateAccountBase();
+                accounts.Add(acc);
             }
+            // set account information if not specified
+            if (!acc.AccountInformationSet)
+            {
+                SetAccountInformation(acc);
+                acc.AccountInformationSet = true;
+            }
+            _context.SaveChanges();
             return acc;
         }
 
-        private T CreateAccount()
+        private A CreateAccountBase()
         {
-            T acc = new T()
+            return new A
             {
                 Id = Guid.NewGuid().ToString(),
                 Sid = this.GetCurrentUserClaim(ClaimTypes.NameIdentifier),
                 Verified = true,
-                Provider = _providers[User.Identity.AuthenticationType]
+                Provider = User.Identity.AuthenticationType
             };
-
-            CreateNewAccount(acc);
-            return acc;
         }
 
-        protected abstract void CreateNewAccount(T newAccount);
+        protected abstract DbSet<A> GetAccountsDbSet(C fromContext);
+
+        protected abstract void SetAccountInformation(A newAccount);
     }
 }

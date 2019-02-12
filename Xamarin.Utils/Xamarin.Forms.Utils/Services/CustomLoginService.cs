@@ -33,7 +33,7 @@ namespace Xamarin.Forms.Utils.Services
         /// <returns>Registration result.</returns>
         public async Task<RegistrationResult> Register(string email, string password)
         {
-            var registrationRequest = new RegistrationRequest() { Email = email, Password = password };
+            var registrationRequest = new RegistrationRequest() { UserId = email, Password = password };
             var ret = await _mobileServiceClient.InvokeApiAsync<RegistrationRequest, RegistrationResult>(
                 _customRegistrationControllerName, registrationRequest);
             return ret;
@@ -50,7 +50,7 @@ namespace Xamarin.Forms.Utils.Services
         /// <returns>Login result.</returns>
         public async Task<bool> Login(string email, string password)
         {
-            var loginRequest = new CustomLoginRequest() { Email = email, Password = password };
+            var loginRequest = new CustomLoginRequest() { UserId = email, Password = password };
             var ret = await _mobileServiceClient.InvokeApiAsync<CustomLoginRequest, CustomLoginResult>(
                 _customLoginControllerName, loginRequest);
             if (ret != null)
