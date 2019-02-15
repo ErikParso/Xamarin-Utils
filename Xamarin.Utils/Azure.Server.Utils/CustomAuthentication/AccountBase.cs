@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Mobile.Server;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Azure.Server.Utils.CustomAuthentication
 {
@@ -6,12 +7,19 @@ namespace Azure.Server.Utils.CustomAuthentication
     /// Account base for custom Authentication.
     /// </summary>
     /// <seealso cref="Microsoft.Azure.Mobile.Server.EntityData" />
-    public abstract class AccountBase : EntityData
+    public abstract class AccountBase
     {
         /// <summary>
         /// Server id. Account identifier.
         /// </summary>
+        [Key, Column(Order = 0)]
         public string Sid { get; set; }
+
+        /// <summary>
+        /// Provider name. Specified in <see cref="CustomRegistrationController{C, A}"/> controller.
+        /// </summary>
+        [Key, Column(Order = 1)]
+        public string Provider { get; set; }
 
         /// <summary>
         /// The salt.
@@ -22,11 +30,6 @@ namespace Azure.Server.Utils.CustomAuthentication
         /// Pwd hash.
         /// </summary>
         public byte[] Hash { get; set; }
-
-        /// <summary>
-        /// Provider name. Specified in <see cref="CustomRegistrationController{C, A}"/> controller.
-        /// </summary>
-        public string Provider { get; set; }
 
         /// <summary>
         /// Determines, if chils account information was set.

@@ -1,5 +1,4 @@
 ﻿using Azure.Server.Utils.Extensions;
-using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
@@ -62,10 +61,9 @@ namespace Azure.Server.Utils.CustomAuthentication
         {
             return new A
             {
-                Id = Guid.NewGuid().ToString(),
                 Sid = this.GetCurrentUserClaim(ClaimTypes.NameIdentifier),
+                Provider = User.Identity.AuthenticationType,
                 Verified = true,
-                Provider = User.Identity.AuthenticationType
             };
         }
 

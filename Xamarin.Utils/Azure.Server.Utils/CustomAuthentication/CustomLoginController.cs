@@ -48,6 +48,7 @@ namespace Azure.Server.Utils.CustomAuthentication
         public CustomLoginResult Login(CustomLoginRequest loginRequest)
         {
             A account = GetAccountsDbSet(_context)
+                .Where(a => a.Provider == "Federation")
                 .Where(a => a.Sid == loginRequest.UserId)
                 .SingleOrDefault();
             if (account != null)
@@ -80,6 +81,7 @@ namespace Azure.Server.Utils.CustomAuthentication
         public IHttpActionResult RefreshToken(string userId, string refreshToken)
         {
             A account = GetAccountsDbSet(_context)
+                .Where(a => a.Provider == "Federation")
                 .Where(a => a.Sid == userId)
                 .SingleOrDefault();
             if (account.RefreshToken != refreshToken)
