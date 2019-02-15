@@ -17,12 +17,12 @@ namespace Xamarin.Forms.Utils.Services
     /// <seealso cref="IAuthenticationService" />
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly MobileServiceClient _mobileServiceClient;
+        private readonly AuthMobileServiceClient _mobileServiceClient;
         private readonly IAccountStoreService _accountStoreService;
         private readonly string _customLoginControllerName;
 
         public AuthenticationService(
-            MobileServiceClient mobileServiceClient,
+            AuthMobileServiceClient mobileServiceClient,
             IAccountStoreService accountStoreService,
             string customLoginControllerName)
         {

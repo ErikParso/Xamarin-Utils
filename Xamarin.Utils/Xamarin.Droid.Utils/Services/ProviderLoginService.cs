@@ -2,6 +2,7 @@
 using Microsoft.WindowsAzure.MobileServices;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Xamarin.Forms.Utils;
 using Xamarin.Forms.Utils.Models;
 using Xamarin.Forms.Utils.Services;
 
@@ -9,14 +10,14 @@ namespace Xamarin.Droid.Utils.Services
 {
     public class ProviderLoginService : IProviderLoginService
     {
-        private readonly MobileServiceClient _mobileServiceClient;
+        private readonly AuthMobileServiceClient _mobileServiceClient;
         private readonly Context _context;
         private readonly IAccountStoreService _accountStoreService;
         private readonly string _uriScheme;
 
         public ProviderLoginService(
             Context context,
-            MobileServiceClient mobileServiceClient,
+            AuthMobileServiceClient mobileServiceClient,
             IAccountStoreService accountStoreService,
             string uriScheme)
         {
@@ -29,7 +30,7 @@ namespace Xamarin.Droid.Utils.Services
         /// <summary>
         /// Logins user using provider and stores token in acount store.
         /// Stored token will be used in <see cref="Authenticate"/> method.
-        /// Sets logged user to <see cref="MobileServiceClient.CurrentUser"/> and
+        /// Sets logged user to <see cref="AuthMobileServiceClient.CurrentUser"/> and
         /// access to authorized requests should be gratned.
         /// </summary>
         /// <param name="provider">The provider.</param>

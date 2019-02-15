@@ -10,7 +10,7 @@ using Xamarin.Forms.Utils.Validation.Core;
 
 namespace Xamarin.Forms.Utils.ViewModel
 {
-    internal class LoginViewModel : INotifyPropertyChanged
+    public class LoginViewModel : INotifyPropertyChanged
     {
         private readonly IAuthenticationService _authenticationService;
         private readonly ICustomLoginService _customLoginService;

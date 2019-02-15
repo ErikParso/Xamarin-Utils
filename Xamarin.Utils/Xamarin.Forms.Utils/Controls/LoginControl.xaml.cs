@@ -56,7 +56,7 @@ namespace Xamarin.Forms.Utils.Controls
         {
             try
             {
-                var client = AppBase.CurrentAppContainer.Resolve<MobileServiceClient>();
+                var client = AppBase.CurrentAppContainer.Resolve<AuthMobileServiceClient>();
                 var result = await client.InvokeApiAsync<string>(TestUrl);
                 TestResult.Text = $"MobileServiceClient.InvokeApiAsync('{TestUrl}') result:{Environment.NewLine}{result}";
             }

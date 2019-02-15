@@ -8,10 +8,10 @@ namespace Xamarin.Forms.Utils.Services
 {
     public class VerificationService : IVerificationService
     {
-        private readonly MobileServiceClient _mobileServiceClient;
+        private readonly AuthMobileServiceClient _mobileServiceClient;
         private readonly string _verificationControllerName;
 
-        public VerificationService(MobileServiceClient mobileServiceClient, string verificationControllerName)
+        public VerificationService(AuthMobileServiceClient mobileServiceClient, string verificationControllerName)
         {
             _mobileServiceClient = mobileServiceClient;
             _verificationControllerName = verificationControllerName;

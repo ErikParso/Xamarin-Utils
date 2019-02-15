@@ -7,13 +7,13 @@ namespace Xamarin.Forms.Utils.Services
 {
     public class CustomLoginService : ICustomLoginService
     {
-        private readonly MobileServiceClient _mobileServiceClient;
+        private readonly AuthMobileServiceClient _mobileServiceClient;
         private readonly IAccountStoreService _accountStoreService;
         private readonly string _customRegistrationControllerName;
         private readonly string _customLoginControllerName;
 
         public CustomLoginService(
-            MobileServiceClient mobileServiceClient,
+            AuthMobileServiceClient mobileServiceClient,
             IAccountStoreService accountStoreService,
             string customRegistrationControllerName,
             string customLoginControllerName)
@@ -42,7 +42,7 @@ namespace Xamarin.Forms.Utils.Services
         /// <summary>
         /// Logins user using custom login controller and stores token in account store.
         /// Stored token will be used in <see cref="Authenticate"/> method.
-        /// Sets logged user to <see cref="MobileServiceClient.CurrentUser"/> and
+        /// Sets logged user to <see cref="AuthMobileServiceClient.CurrentUser"/> and
         /// access to authorized requests should be gratned.
         /// </summary>
         /// <param name="email">The email.</param>

@@ -6,10 +6,10 @@ namespace Xamarin.Forms.Utils.Services
 {
     public class AccountInformationService : IAccountInformationService
     {
-        private readonly MobileServiceClient _mobileServiceClient;
+        private readonly AuthMobileServiceClient _mobileServiceClient;
         private readonly string _accountsControllerName;
 
-        public AccountInformationService(MobileServiceClient mobileServiceClient, string accountsControllerName)
+        public AccountInformationService(AuthMobileServiceClient mobileServiceClient, string accountsControllerName)
         {
             _mobileServiceClient = mobileServiceClient;
             _accountsControllerName = accountsControllerName;

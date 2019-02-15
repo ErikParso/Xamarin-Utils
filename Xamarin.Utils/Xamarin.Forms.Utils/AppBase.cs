@@ -1,57 +1,33 @@
 ﻿using Autofac;
-using Microsoft.WindowsAzure.MobileServices;
 using System;
-using System.Net.Http;
-using Xamarin.Forms.Utils.Services;
-using Xamarin.Forms.Utils.ViewModel;
 
 namespace Xamarin.Forms.Utils
 {
     public abstract class AppBase : Application
     {
-        protected readonly IContainer Container;
+        private IContainer _container;
+        private ContainerBuilder _containerBuilder;
 
-        public string ApplicationUrl { get; }
+        public static IContainer CurrentAppContainer => ((AppBase)Current)._container;
 
-        public static IContainer CurrentAppContainer => ((AppBase)Current).Container;
-
-        public AppBase(string applicationUrl, Action<ContainerBuilder> registerPlatformSpecificTypes)
+        public AppBase()
         {
-            ApplicationUrl = applicationUrl;
-
-            ContainerBuilder builder = new ContainerBuilder();
-            //Register types defined by Xamarin.Forms.Utils.
-            RegisterUtilsTypes(builder);
-            //Register types defined in shared library.
-            RegisterSharedTypes(builder);
-            //Register types defined by platform specific project.
-            registerPlatformSpecificTypes?.Invoke(builder);
-            Container = builder.Build();
-
-            // set the root page of your application
-            MainPage = GetMainPage();
+            _containerBuilder = new ContainerBuilder();
         }
 
-        private void RegisterUtilsTypes(ContainerBuilder builder)
+        public void RegisterTypes(Action<ContainerBuilder> registrator)
         {
-            builder.RegisterType<RefreshTokenHandler>()
-                .As<HttpMessageHandler>()
-                .OnActivated(e => e.Instance.AuthenticationService = e.Context.Resolve<IAuthenticationService>())
-                .SingleInstance();
-            builder.RegisterType<MobileServiceClient>()
-                .WithParameter(new TypedParameter(typeof(string), ApplicationUrl))
-                .SingleInstance();
-            builder.RegisterType<LoginViewModel>()
-                .SingleInstance();
-            builder.RegisterType<ProfileBarViewModel>()
-                .SingleInstance();
+            if (_container != null)
+                throw new Exception("Container already initialized.");
+            if (registrator == null)
+                throw new ArgumentException("Registrator is not specified");
+            registrator(_containerBuilder);
         }
 
-        protected abstract void RegisterSharedTypes(ContainerBuilder builder);
-
-        /// <summary>
-        /// Provide startup page. You can use <see cref="CurrentAppContainer"/>
-        /// </summary>
-        protected abstract Page GetMainPage();
+        public void Build()
+        {
+            _container = _containerBuilder.Build();
+            _containerBuilder = null;
+        }
     }
 }
