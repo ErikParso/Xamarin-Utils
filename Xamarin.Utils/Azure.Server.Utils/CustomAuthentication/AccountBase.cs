@@ -9,16 +9,17 @@ namespace Azure.Server.Utils.CustomAuthentication
     /// <seealso cref="Microsoft.Azure.Mobile.Server.EntityData" />
     public abstract class AccountBase
     {
+        [Key]
+        public string Id { get; set; }
+
         /// <summary>
         /// Server id. Account identifier.
         /// </summary>
-        [Key, Column(Order = 0)]
         public string Sid { get; set; }
 
         /// <summary>
         /// Provider name. Specified in <see cref="CustomRegistrationController{C, A}"/> controller.
         /// </summary>
-        [Key, Column(Order = 1)]
         public string Provider { get; set; }
 
         /// <summary>

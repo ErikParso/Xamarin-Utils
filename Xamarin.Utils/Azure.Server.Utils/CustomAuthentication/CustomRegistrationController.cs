@@ -53,6 +53,7 @@ namespace Azure.Server.Utils.CustomAuthentication
                 byte[] salt = CustomLoginProviderUtils.GenerateSalt();
                 A newAccount = new A
                 {
+                    Id = Guid.NewGuid().ToString(),
                     Sid = registrationRequest.UserId,
                     Provider = "Federation",
                     Salt = salt,
