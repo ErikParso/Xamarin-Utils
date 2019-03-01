@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Igloo.Azure.Server.Utils</id>
-    <version>1.0.3.2</version>
+    <version>1.0.3.3</version>
     <title>Azure.Server.Utils</title>
     <authors>Erik Parso</authors>
     <owners>Igloo</owners>
