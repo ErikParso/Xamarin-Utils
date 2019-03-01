@@ -10,7 +10,8 @@ namespace Azure.Server.Utils.CustomAuthentication
     public abstract class AccountBase
     {
         [Key]
-        public string Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         /// <summary>
         /// Server id. Account identifier.

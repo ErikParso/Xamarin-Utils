@@ -58,7 +58,6 @@ namespace Azure.Server.Utils.CustomAuthentication
         {
             return new A
             {
-                Id = Guid.NewGuid().ToString(),
                 Sid = this.GetCurrentUserClaim(ClaimTypes.NameIdentifier),
                 Provider = User.Identity.AuthenticationType,
                 Verified = true,
