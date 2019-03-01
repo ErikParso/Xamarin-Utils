@@ -36,12 +36,8 @@ namespace Azure.Server.Utils.CustomAuthentication
         public A GetCurrentAccount()
         {
             DbSet<A> accounts = GetAccountsDbSet(_context);
-            var sid = this.GetCurrentUserClaim(ClaimTypes.NameIdentifier);
             // try get account base instance for current user
-            A acc = GetAccountsDbSet(_context)
-                .Where(a => a.Provider == User.Identity.AuthenticationType)
-                .Where(a => a.Sid == sid)
-                .SingleOrDefault();
+            A acc = this.GetCurrentUserAccount(accounts);
             // if not found, create account base info
             if (acc == null)
             {

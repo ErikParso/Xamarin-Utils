@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Claims;
 using System.Web.Http;
 
 namespace Azure.Server.Utils.CustomAuthentication
@@ -26,28 +25,21 @@ namespace Azure.Server.Utils.CustomAuthentication
         [Authorize]
         public void PostVerify()
         {
-            var userId = this.GetCurrentUserClaim(ClaimTypes.NameIdentifier);
-            A account = GetAccountsDbSet(_context)
-                .Where(a => a.Provider == "Federation")
-                .Where(a => a.Sid == userId)
-                .SingleOrDefault();
+            A account = this.GetCurrentUserAccount(GetAccountsDbSet(_context));
             if (account != null)
             {
                 string confirmationKey = CustomLoginProviderUtils.RandomString(32);
                 account.ConfirmationHash = CustomLoginProviderUtils.Hash(confirmationKey, account.Salt);
                 account.Verified = false;
                 _context.SaveChanges();
-                _emailService.SendEmail("Account confirmation", CreateConfirmationLink(userId, confirmationKey), account);
+                _emailService.SendEmail("Account confirmation", CreateConfirmationLink(account.Sid, confirmationKey), account);
             }
         }
 
         public HttpResponseMessage GetVerify(string userId, string key)
         {
             string result = null;
-            A account = GetAccountsDbSet(_context)
-                .Where(a => a.Provider == "Federation")
-                .Where(a => a.Sid == userId)
-                .SingleOrDefault();
+            A account = GetAccountsDbSet(_context).GetUserAccount(userId, "Federation");
             if (account != null)
             {
                 if (account.Verified)

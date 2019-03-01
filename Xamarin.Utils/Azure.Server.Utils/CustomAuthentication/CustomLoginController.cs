@@ -1,10 +1,10 @@
 ﻿using Azure.Server.Utils.Communication.Authentication;
+using Azure.Server.Utils.Extensions;
 using Microsoft.Azure.Mobile.Server.Login;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IdentityModel.Tokens;
-using System.Linq;
 using System.Security.Claims;
 using System.Web.Http;
 
@@ -47,10 +47,7 @@ namespace Azure.Server.Utils.CustomAuthentication
         [HttpPost]
         public CustomLoginResult Login(CustomLoginRequest loginRequest)
         {
-            A account = GetAccountsDbSet(_context)
-                .Where(a => a.Provider == "Federation")
-                .Where(a => a.Sid == loginRequest.UserId)
-                .SingleOrDefault();
+            A account = GetAccountsDbSet(_context).GetUserAccount(loginRequest.UserId, "Federation");
             if (account != null)
             {
                 byte[] incoming = CustomLoginProviderUtils.Hash(loginRequest.Password, account.Salt);
@@ -80,10 +77,7 @@ namespace Azure.Server.Utils.CustomAuthentication
         [HttpGet]
         public IHttpActionResult RefreshToken(string userId, string refreshToken)
         {
-            A account = GetAccountsDbSet(_context)
-                .Where(a => a.Provider == "Federation")
-                .Where(a => a.Sid == userId)
-                .SingleOrDefault();
+            A account = GetAccountsDbSet(_context).GetUserAccount(userId, "Federation");
             if (account.RefreshToken != refreshToken)
             {
                 throw new SecurityTokenException("Invalid refresh token");

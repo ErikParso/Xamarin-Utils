@@ -1,4 +1,5 @@
 ﻿using Azure.Server.Utils.Communication.Authentication;
+using Azure.Server.Utils.Extensions;
 using System;
 using System.Data.Entity;
 using System.Linq;
@@ -39,10 +40,7 @@ namespace Azure.Server.Utils.CustomAuthentication
         public RegistrationResult Post(RegistrationRequest registrationRequest)
         {
             DbSet<A> accounts = GetAccountsDbSet(_context);
-            A account = accounts
-                .Where(a => a.Provider == "Federation")
-                .Where(a => a.Sid == registrationRequest.UserId)
-                .SingleOrDefault();
+            A account = accounts.GetUserAccount(registrationRequest.UserId, "Federation");
 
             if (account != null)
             {
