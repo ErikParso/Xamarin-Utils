@@ -45,7 +45,7 @@ namespace Azure.Server.Utils.CustomAuthentication
         /// Login result (access and refresh token).
         /// </returns>
         [HttpPost]
-        public CustomLoginResult Login(CustomLoginRequest loginRequest)
+        public IHttpActionResult Login(CustomLoginRequest loginRequest)
         {
             A account = GetAccountsDbSet(_context).GetUserAccount(loginRequest.UserId, "Federation");
             if (account != null)
@@ -56,15 +56,15 @@ namespace Azure.Server.Utils.CustomAuthentication
                     var accessToken = GetAuthenticationTokenForUser(account.Sid);
                     account.RefreshToken = CustomLoginProviderUtils.GenerateRefreshToken();
                     _context.SaveChanges();
-                    return new CustomLoginResult()
+                    return Ok(new CustomLoginResult()
                     {
                         UserId = account.Sid,
                         MobileServiceAuthenticationToken = accessToken.RawData,
                         RefreshToken = account.RefreshToken
-                    };
+                    });
                 }
             }
-            return null;
+            return BadRequest("Invalid name or password.");
         }
 
         /// <summary>
