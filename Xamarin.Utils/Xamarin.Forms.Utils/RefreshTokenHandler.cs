@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Microsoft.WindowsAzure.MobileServices;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +9,8 @@ namespace Xamarin.Forms.Utils
 {
     public class RefreshTokenHandler : DelegatingHandler
     {
+        public MobileServiceClient MobileServiceClient { get; set; }
+
         public IAuthenticationService AuthenticationService { get; set; }
 
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -25,6 +28,7 @@ namespace Xamarin.Forms.Utils
             else
             {
                 response.Dispose();
+                MobileServiceClient.CurrentUser.MobileServiceAuthenticationToken = newAccessToken;
                 request.Headers.Remove("X-ZUMO-AUTH");
                 request.Headers.Add("X-ZUMO-AUTH", newAccessToken);
                 return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);

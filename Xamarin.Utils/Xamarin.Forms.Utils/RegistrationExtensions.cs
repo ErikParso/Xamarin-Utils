@@ -10,6 +10,7 @@ namespace Xamarin.Forms.Utils
         {
             builder.RegisterType<RefreshTokenHandler>()
                 .OnActivated(e => e.Instance.AuthenticationService = e.Context.Resolve<IAuthenticationService>())
+                .OnActivated(e => e.Instance.MobileServiceClient = e.Context.Resolve<AuthMobileServiceClient>())
                 .SingleInstance();
             builder.RegisterType<AuthMobileServiceClient>()
                 .WithParameter(new TypedParameter(typeof(string), applicationUrl))
