@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using System;
+using System.Threading.Tasks;
 using Xamarin.Forms.Utils.ViewModel;
 using Xamarin.Forms.Xaml;
 
@@ -19,14 +20,10 @@ namespace Xamarin.Forms.Utils.Controls
             BindingContext = _viewModel;
         }
 
-        public void LoadAccountInformation()
-        {
-            _viewModel.LoadAccountInformation();
-        }
+        public async Task LoadAccountInformation()
+            => await _viewModel.LoadAccountInformation();
 
         private void LogoutButton_Clicked(object sender, System.EventArgs e)
-        {
-            LogoutClicked(this, EventArgs.Empty);
-        }
+            => LogoutClicked(this, EventArgs.Empty);
     }
 }

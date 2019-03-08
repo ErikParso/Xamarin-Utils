@@ -78,9 +78,9 @@ namespace Azure.Server.Utils.CustomAuthentication
         public IHttpActionResult RefreshToken(string userId, string refreshToken)
         {
             A account = GetAccountsDbSet(_context).GetUserAccount(userId, "Federation");
-            if (account.RefreshToken != refreshToken)
+            if (account == null || account.RefreshToken != refreshToken)
             {
-                throw new SecurityTokenException("Invalid refresh token");
+                return BadRequest("Invalid account or refresh token.");
             }
             else
             {
