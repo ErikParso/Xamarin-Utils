@@ -25,7 +25,7 @@ namespace Azure.Server.Utils.CustomAuthentication
         [Authorize]
         public void PostVerify()
         {
-            A account = this.GetCurrentUserAccount(GetAccountsDbSet(_context));
+            A account = User.GetCurrentUserAccount(GetAccountsDbSet(_context));
             if (account != null)
             {
                 string confirmationKey = CustomLoginProviderUtils.RandomString(32);

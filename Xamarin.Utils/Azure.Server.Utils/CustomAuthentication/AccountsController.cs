@@ -37,7 +37,7 @@ namespace Azure.Server.Utils.CustomAuthentication
         {
             DbSet<A> accounts = GetAccountsDbSet(_context);
             // try get account base instance for current user
-            A acc = this.GetCurrentUserAccount(accounts);
+            A acc = User.GetCurrentUserAccount(accounts);
             // if not found, create account base info
             if (acc == null)
             {
@@ -58,7 +58,7 @@ namespace Azure.Server.Utils.CustomAuthentication
         {
             return new A
             {
-                Sid = this.GetCurrentUserClaim(ClaimTypes.NameIdentifier),
+                Sid = User.GetCurrentUserClaim(ClaimTypes.NameIdentifier),
                 Provider = User.Identity.AuthenticationType,
                 Verified = true,
             };
