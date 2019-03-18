@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Xamarin.Forms.Utils.Services;
 
 namespace Xamarin.Forms.Utils.ViewModel
@@ -30,7 +31,7 @@ namespace Xamarin.Forms.Utils.ViewModel
         }
 
 
-        public async void LoadAccountInformation()
+        public async Task LoadAccountInformation()
         {
             var account = await _accountInformationService.GetCurrentAccountInformation();
             Name = account.Value<string>("name");

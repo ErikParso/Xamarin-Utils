@@ -51,21 +51,28 @@ namespace Xamarin.Forms.Utils.Services
 
         private async Task<string> CustomProviderAuthentication(RefreshTokenInfo refreshTokenInfo)
         {
-            var ret = await _mobileServiceClient.InvokeApiAsync<CustomLoginResult>(
-                _customLoginControllerName, HttpMethod.Get, new Dictionary<string, string> {
-                    { "userId", refreshTokenInfo.UserId }, { "refreshToken", refreshTokenInfo.RefreshToken }
-                });
-            if (ret != null)
+            try
             {
-                _mobileServiceClient.CurrentUser = new MobileServiceUser(ret.UserId)
+                var ret = await _mobileServiceClient.InvokeApiAsync<CustomLoginResult>(
+                    _customLoginControllerName, HttpMethod.Get, new Dictionary<string, string> {
+                    { "userId", refreshTokenInfo.UserId }, { "refreshToken", refreshTokenInfo.RefreshToken }
+                    });
+                if (ret != null)
                 {
-                    MobileServiceAuthenticationToken = ret.MobileServiceAuthenticationToken
-                };
-                refreshTokenInfo.RefreshToken = ret.RefreshToken;
-                _accountStoreService.StoreTokenInSecureStore(refreshTokenInfo);
-                return _mobileServiceClient.CurrentUser.MobileServiceAuthenticationToken;
+                    _mobileServiceClient.CurrentUser = new MobileServiceUser(ret.UserId)
+                    {
+                        MobileServiceAuthenticationToken = ret.MobileServiceAuthenticationToken
+                    };
+                    refreshTokenInfo.RefreshToken = ret.RefreshToken;
+                    _accountStoreService.StoreTokenInSecureStore(refreshTokenInfo);
+                    return _mobileServiceClient.CurrentUser.MobileServiceAuthenticationToken;
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
-            else
+            catch (MobileServiceInvalidOperationException)
             {
                 return string.Empty;
             }
