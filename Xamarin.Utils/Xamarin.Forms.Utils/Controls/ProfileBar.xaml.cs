@@ -20,7 +20,7 @@ namespace Xamarin.Forms.Utils.Controls
             BindingContext = _viewModel;
         }
 
-        public async Task LoadAccountInformation()
+        public async Task Initialize()
             => await _viewModel.LoadAccountInformation();
 
         private void LogoutButton_Clicked(object sender, System.EventArgs e)

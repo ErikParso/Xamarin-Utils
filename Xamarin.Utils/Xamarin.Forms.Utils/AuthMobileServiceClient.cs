@@ -7,7 +7,7 @@ namespace Xamarin.Forms.Utils
         public AuthMobileServiceClient(string appUrl, RefreshTokenHandler refreshTokenHandler)
             : base(appUrl, refreshTokenHandler)
         {
-
+            
         }
     }
 }
