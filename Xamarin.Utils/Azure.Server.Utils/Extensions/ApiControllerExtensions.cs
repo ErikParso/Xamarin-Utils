@@ -9,6 +9,9 @@ namespace Azure.Server.Utils.Extensions
 {
     public static class ApiControllerExtensions
     {
+        public static string GetAuthenticatedByClaim(this IPrincipal user)
+            => GetCurrentUserClaim(user, Constants.AUTHENTICATED_BY_CLAIM);
+
         public static string GetCurrentUserClaim(this IPrincipal user, string claim)
             => ((ClaimsPrincipal)user).FindFirst(claim)?.Value;
 

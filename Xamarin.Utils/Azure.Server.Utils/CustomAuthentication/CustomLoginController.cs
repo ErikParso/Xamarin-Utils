@@ -114,7 +114,8 @@ namespace Azure.Server.Utils.CustomAuthentication
         private IEnumerable<Claim> GetClaims(string userId) => new Claim[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, userId),
-            new Claim(ClaimTypes.NameIdentifier, "custom")
+            new Claim(ClaimTypes.NameIdentifier, "custom"),
+            new Claim(Constants.AUTHENTICATED_BY_CLAIM, this.GetType().Name)
         };
     }
 }

@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="CustomAuthentication\AccountBase.cs" />
     <Compile Include="CustomAuthentication\AccountsController.cs" />
     <Compile Include="CustomAuthentication\CustomLoginController.cs" />
